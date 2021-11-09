@@ -1,0 +1,32 @@
+{
+	"private": true,
+	"name": "@rentfuse-labs/neo-wallet-adapter-neoline",
+	"version": "0.1.0",
+	"author": "Rentfuse Labs",
+	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
+	"license": "Apache-2.0",
+	"type": "module",
+	"sideEffects": false,
+	"main": "lib/index.js",
+	"esnext": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"files": [
+		"lib",
+		"src",
+		"LICENSE"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"clean": "shx rm -rf lib/*",
+		"build": "yarn clean && tsc"
+	},
+	"peerDependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
+	}
+}

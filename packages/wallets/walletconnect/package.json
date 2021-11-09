@@ -1,0 +1,39 @@
+{
+	"private": true,
+	"name": "@rentfuse-labs/neo-wallet-adapter-walletconnect",
+	"version": "0.1.0",
+	"author": "Rentfuse Labs",
+	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
+	"license": "Apache-2.0",
+	"type": "module",
+	"sideEffects": false,
+	"main": "lib/index.js",
+	"esnext": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"files": [
+		"lib",
+		"src",
+		"LICENSE"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"clean": "shx rm -rf lib/*",
+		"build": "yarn clean && tsc"
+	},
+	"peerDependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
+	},
+	"dependencies": {
+		"@cityofzion/wallet-connect-sdk-core": "^1.4.0",
+		"@walletconnect/client": "2.0.0-beta.17",
+		"@walletconnect/qrcode-modal": "2.0.0-alpha.20",
+		"@walletconnect/types": "2.0.0-beta.17",
+		"@walletconnect/utils": "2.0.0-beta.17",
+		"@types/pino": "^6.3.11"
+	},
+	"devDependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
+	}
+}
