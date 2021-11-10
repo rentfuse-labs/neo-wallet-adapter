@@ -31,7 +31,7 @@ export interface NeoLineWalletAdapterConfig {
 	pollCount?: number;
 }
 
-// The main class for the wallet
+// Reference at https://neoline.io/dapi/N3.html (Taken on 08/11/21)
 export class NeoLineWalletAdapter extends BaseWalletAdapter {
 	private _address: string | null;
 	private _connecting: boolean;
@@ -237,7 +237,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		return {
 			status: 'success',
 			data: {
-				txId: response.txId,
+				txId: response.txid,
 			},
 		};
 	}

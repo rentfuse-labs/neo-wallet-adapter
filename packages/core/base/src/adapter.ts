@@ -103,12 +103,6 @@ export type ContractWriteInvocationResult = {
 	code?: string;
 };
 
-export enum WalletAdapterNetwork {
-	Mainnet = 'mainnet',
-	Testnet = 'testnet',
-	Localhost = 'localhost',
-}
-
 export interface WalletAdapterEvents {
 	ready(): void;
 	connect(): void;

@@ -76,12 +76,11 @@ export type NeoLineReadInvocationResult = {
 };
 
 export type NeoLineWriteInvocationResult = {
-	txId: string;
+	txid: string;
 	nodeURL?: string;
 	signedTx?: string;
 };
 
-// Reference at https://neoline.io/dapi/N3.html (Taken on 08/11/21)
 export interface NeoLineN3Interface {
 	getAccount(): Promise<NeoLineAccount>;
 

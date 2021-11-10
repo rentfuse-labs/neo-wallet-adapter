@@ -1,6 +1,5 @@
 {
-	"private": true,
-	"name": "@rentfuse-labs/neo-wallet-adapter-o3",
+	"name": "@rentfuse-labs/neo-wallet-adapter-react",
 	"version": "0.1.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
@@ -23,12 +22,14 @@
 		"build": "yarn clean && tsc"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
-	},
-	"dependencies": {
-		"neo3-dapi": "^1.0.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.1.0",
+		"react": "^17.0.2"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.1.0",
+		"@types/react": "^17.0.24",
+		"react": "^17.0.2"
 	}
 }

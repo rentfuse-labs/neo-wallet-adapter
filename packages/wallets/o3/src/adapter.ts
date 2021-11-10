@@ -1,10 +1,6 @@
-import { O3Account, O3N3Interface, O3ReadInvocationResult, O3Signer, O3WriteInvocationResult } from './utils/o3';
+import neo3Dapi from 'neo3-dapi';
 import {
 	BaseWalletAdapter,
-	pollUntilReady,
-	WalletNotFoundError,
-	WalletError,
-	WalletConnectionError,
 	WalletAccountError,
 	WalletDisconnectionError,
 	WalletNotConnectedError,
@@ -21,11 +17,9 @@ import {
 // The configuration object used to create an instance of the wallet
 export interface O3WalletAdapterConfig {
 	options: any;
-	pollInterval?: number;
-	pollCount?: number;
 }
 
-// The main class for the wallet
+// Reference at https://neo3dapidocs.o3.network/#getting-started (Taken on 10/11/21)
 export class O3WalletAdapter extends BaseWalletAdapter {
 	private _address: string | null;
 	private _connecting: boolean;
@@ -33,7 +27,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	// TODO: What?
 	private _options: any;
 
-	private _client: O3N3Interface | undefined;
+	private _client: any | undefined;
 
 	constructor(config: O3WalletAdapterConfig) {
 		super();
@@ -42,7 +36,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		this._connecting = false;
 		this._options = config.options;
 
-		if (!this.ready) pollUntilReady(this, config.pollInterval || 1000, config.pollCount || 3);
+		this._client = neo3Dapi;
 	}
 
 	get address(): string | null {
@@ -50,7 +44,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	get ready(): boolean {
-		return typeof window !== 'undefined' && (window as any).NEOLineN3 !== 'undefined';
+		return typeof window !== 'undefined';
 	}
 
 	get connecting(): boolean {
@@ -66,21 +60,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			if (this.connected || this.connecting) return;
 			this._connecting = true;
 
-			// Check that o3 wallet is injected into the window object
-			const wallet = (window as any).NEOLineN3;
-			if (!wallet) throw new WalletNotFoundError();
-
-			try {
-				// Get the o3 client initializing the wallet
-				this._client = await wallet.Init();
-			} catch (error: any) {
-				if (error instanceof WalletError) throw error;
-				throw new WalletConnectionError(error?.message, error);
-			}
-
-			if (!this._client) throw new WalletAccountError();
-
-			let account: O3Account;
+			// Taken from o3 specs
+			let account: { address: string; label: string; };
 			try {
 				// O3 asks the user to connect the dapp when calling the getAccount method
 				account = await this._client.getAccount();
@@ -92,7 +73,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			this._address = account.address;
 
 			// Add a listener to cleanup of disconnection
-			window.addEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
+			this._client.addEventListener(neo3Dapi.Constants.EventName.DISCONNECTED, this._disconnected);
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -194,7 +175,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
-	private _signers(signers: Signer[]): O3Signer[] {
+	private _signers(signers: Signer[]): any[] {
 		return signers.map((signer) => ({
 			account: signer.account,
 			scopes: signer.scope,
@@ -203,7 +184,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}));
 	}
 
-	private _responseToReadResult(response: O3ReadInvocationResult): ContractReadInvocationResult {
+	private _responseToReadResult(response: any): ContractReadInvocationResult {
 		// If the state is halt it means that everything went well
 		if (response.state === 'HALT') {
 			return {
@@ -227,11 +208,11 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _responseToWriteResult(response: O3WriteInvocationResult): ContractWriteInvocationResult {
+	private _responseToWriteResult(response: any): ContractWriteInvocationResult {
 		return {
 			status: 'success',
 			data: {
-				txId: response.txId,
+				txId: response.txid,
 			},
 		};
 	}
@@ -239,7 +220,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	private _disconnected() {
 		const client = this._client;
 		if (client) {
-			window.removeEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
+			this._client.removeEventListener(neo3Dapi.Constants.EventName.DISCONNECTED);
 
 			this._address = null;
 			this._client = undefined;
