@@ -14,6 +14,8 @@ import {
 	ContractWriteInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 
+const DEFAULT_WALLET_CONFIG = { options: null };
+
 // The configuration object used to create an instance of the wallet
 export interface O3WalletAdapterConfig {
 	options: any;
@@ -29,7 +31,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 
 	private _client: any | undefined;
 
-	constructor(config: O3WalletAdapterConfig) {
+	constructor(config: O3WalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
 
 		this._address = null;

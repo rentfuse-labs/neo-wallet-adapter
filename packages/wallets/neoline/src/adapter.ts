@@ -24,6 +24,8 @@ import {
 	ContractWriteInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 
+const DEFAULT_WALLET_CONFIG = { options: null };
+
 // The configuration object used to create an instance of the wallet
 export interface NeoLineWalletAdapterConfig {
 	options: any;
@@ -41,7 +43,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 
 	private _client: NeoLineN3Interface | undefined;
 
-	constructor(config: NeoLineWalletAdapterConfig) {
+	constructor(config: NeoLineWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
 
 		this._address = null;
