@@ -115,10 +115,9 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		const client = this._client;
 		if (client) {
 			try {
-				// TODO: Disconnect from the client, how?
+				// TODO: How?
 				//await this._client.disconnect();
 
-				// Cleanup data
 				this._address = null;
 				this._client = undefined;
 			} catch (error: any) {

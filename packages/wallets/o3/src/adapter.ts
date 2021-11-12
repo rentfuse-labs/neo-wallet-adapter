@@ -37,8 +37,6 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		this._address = null;
 		this._connecting = false;
 		this._options = config.options;
-
-		this._client = neo3Dapi;
 	}
 
 	get address(): string | null {
@@ -62,8 +60,11 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			if (this.connected || this.connecting) return;
 			this._connecting = true;
 
+			// Assign a new client
+			this._client = neo3Dapi;
+
 			// Taken from o3 specs
-			let account: { address: string; label: string; };
+			let account: { address: string; label: string };
 			try {
 				// O3 asks the user to connect the dapp when calling the getAccount method
 				account = await this._client.getAccount();
@@ -90,10 +91,9 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		const client = this._client;
 		if (client) {
 			try {
-				// TODO: Disconnect from the client, how?
+				// TODO: How?
 				//await this._client.disconnect();
 
-				// Cleanup data
 				this._address = null;
 				this._client = undefined;
 			} catch (error: any) {

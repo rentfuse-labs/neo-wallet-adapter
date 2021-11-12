@@ -12,6 +12,7 @@ import {
 	ContractWriteInvocationMulti,
 	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
+	WalletNotConnectedError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import QRCodeModal from '@walletconnect/qrcode-modal';
 
@@ -31,7 +32,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _logger: string;
 	private _relayServer: string;
 
-	private _sdk: WcSdk;
+	private _sdk: WcSdk | undefined;
 
 	constructor(config: WalletConnectWalletAdapterConfig) {
 		super();
@@ -41,20 +42,6 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		this._options = config.options;
 		this._logger = config.logger;
 		this._relayServer = config.relayServer;
-
-		this._sdk = new WcSdk();
-		this._sdk.subscribeToEvents({
-			onProposal: (uri: string) => {
-				// Show qrcode modal
-				QRCodeModal.open(uri, () => {
-					// Nothing huehuehue :)
-				});
-			},
-			onCreated: (topics: string[]) => {
-				// Nothing huehuehue :)
-			},
-			onDeleted: this._disconnected,
-		});
 	}
 
 	get address(): string | null {
@@ -79,6 +66,9 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			this._connecting = true;
 
 			try {
+				// Initialize a new sdk to be used
+				this._sdk = new WcSdk();
+
 				// Initialize sdk client
 				await this._sdk.initClient(this._logger, this._relayServer);
 				// Connect with the sdk client
@@ -98,6 +88,20 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 				throw new WalletAccountError(error?.message, error);
 			}
 
+			// Subscribe to events
+			this._sdk.subscribeToEvents({
+				onProposal: (uri: string) => {
+					// Show qrcode modal
+					QRCodeModal.open(uri, () => {
+						// Nothing huehuehue :)
+					});
+				},
+				onCreated: (topics: string[]) => {
+					// Nothing huehuehue :)
+				},
+				onDeleted: this._disconnected,
+			});
+
 			this.emit('connect');
 		} catch (error: any) {
 			this.emit('error', error);
@@ -108,15 +112,13 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async disconnect(): Promise<void> {
-		const client = this._sdk.wcClient;
-		if (client) {
+		const sdk = this._sdk;
+		if (sdk) {
 			try {
-				// Disconnect from the client
-				await this._sdk.disconnect();
+				await sdk.disconnect();
 
-				// Cleanup data
 				this._address = null;
-				this._sdk.wcClient = undefined;
+				this._sdk = undefined;
 			} catch (error: any) {
 				this.emit('error', new WalletDisconnectionError(error?.message, error));
 			}
@@ -125,8 +127,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeRead(request: ContractReadInvocation): Promise<ContractReadInvocationResult> {
+		const sdk = this._sdk;
+		if (!sdk) throw new WalletNotConnectedError();
+
 		try {
-			const response = await this._sdk.testInvoke({
+			const response = await sdk.testInvoke({
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
@@ -141,8 +146,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult> {
+		const sdk = this._sdk;
+		if (!sdk) throw new WalletNotConnectedError();
+
 		try {
-			const response = await this._sdk.multiTestInvoke({
+			const response = await sdk.multiTestInvoke({
 				invocations: request.invocations,
 				signer: request.signers,
 			});
@@ -154,8 +162,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult> {
+		const sdk = this._sdk;
+		if (!sdk) throw new WalletNotConnectedError();
+
 		try {
-			const response = await this._sdk.invokeFunction({
+			const response = await sdk.invokeFunction({
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
@@ -170,8 +181,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult> {
+		const sdk = this._sdk;
+		if (!sdk) throw new WalletNotConnectedError();
+
 		try {
-			const response = await this._sdk.multiInvoke({
+			const response = await sdk.multiInvoke({
 				signer: request.signers,
 				invocations: request.invocations,
 			});
@@ -221,11 +235,12 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	private _disconnected() {
-		// Cleanup sdk client and emit disconnect event
-		const client = this._sdk.wcClient;
-		if (client) {
+		const sdk = this._sdk;
+		if (sdk) {
+			// TODO: Remove listeners?
+
 			this._address = null;
-			this._sdk.wcClient = undefined;
+			this._sdk = undefined;
 
 			this.emit('error', new WalletDisconnectedError());
 			this.emit('disconnect');
