@@ -25,10 +25,12 @@
 	"scripts": {
 		"lerna:clean": "lerna run clean",
 		"lerna:build": "lerna run build",
-		"lerna:test": "lerna run test",
 		"lerna:link": "lerna link",
+		"lerna:build-link": "yarn run lerna:build && yarn run lerna:link",
 		"lerna:bootstrap": "lerna bootstrap",
+		"lerna:test": "lerna run test",
 		"lerna:publish": "lerna publish from-package",
+		"starter:nextjs:dev": "cd packages/starter/nextjs-starter && yarn run dev",
 		"deploy": "yarn deploy:docs && yarn deploy:example",
 		"deploy:docs": "yarn docs && gh-pages --dist docs --dotfiles",
 		"deploy:example": "gh-pages --dist packages/starter/example/out --dest example --dotfiles",

@@ -26,11 +26,11 @@
 		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.0"
 	},
 	"dependencies": {
-		"@cityofzion/wallet-connect-sdk-core": "^1.4.0",
-		"@walletconnect/client": "2.0.0-beta.17",
+		"@walletconnect/client": "2.0.0-beta.20",
 		"@walletconnect/qrcode-modal": "2.0.0-alpha.20",
-		"@walletconnect/types": "2.0.0-beta.17",
-		"@walletconnect/utils": "2.0.0-beta.17",
+		"@walletconnect/types": "2.0.0-beta.20",
+		"@walletconnect/utils": "2.0.0-beta.20",
+		"@walletconnect/jsonrpc-utils": "^1.0.0",
 		"@types/pino": "^6.3.11"
 	},
 	"devDependencies": {
