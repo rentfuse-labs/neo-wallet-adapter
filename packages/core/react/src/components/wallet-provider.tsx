@@ -11,7 +11,6 @@ import {
 import { Wallet, WalletName } from '@rentfuse-labs/neo-wallet-adapter-wallets';
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { WalletNotSelectedError } from '../utils/errors';
-import { useLocalStorage } from '../hooks/use-local-storage';
 import { WalletContext } from '../hooks/use-wallet';
 
 export interface WalletProviderState {
@@ -34,17 +33,14 @@ export const WalletProvider = React.memo(function WalletProvider({
 	children,
 	wallets,
 	autoConnect = false,
-	localStorageKey = 'walletName',
 	onError: _onError = (error: WalletError) => console.error(error),
 }: {
 	children: ReactNode;
 	wallets: Wallet[];
 	autoConnect?: boolean;
-	localStorageKey?: string;
 	onError?: (error: WalletError) => void;
 }) {
-	// The name of the wallet to be saved in local storage for a possible autoconnect
-	const [name, setName] = useLocalStorage<WalletName | null>(localStorageKey, null);
+	const [name, setName] = useState<WalletName | null>(null);
 	// The main state of the wallet provider
 	const [{ wallet, adapter, ready, address, connected }, setState] =
 		useState<WalletProviderState>(WALLET_INITIAL_STATE);

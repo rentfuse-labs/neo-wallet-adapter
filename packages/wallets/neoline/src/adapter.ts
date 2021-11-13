@@ -1,5 +1,6 @@
 import {
 	NeoLineAccount,
+	NeoLineN3Init,
 	NeoLineN3Interface,
 	NeoLineReadInvocationResult,
 	NeoLineSigner,
@@ -74,13 +75,9 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			if (this.connected || this.connecting) return;
 			this._connecting = true;
 
-			// Check that neoline wallet is injected into the window object
-			const wallet = (window as any).NEOLineN3;
-			if (!wallet) throw new WalletNotFoundError();
-
 			try {
 				// Get the neoline client initializing the wallet
-				this._client = await wallet.Init();
+				this._client = await NeoLineN3Init();
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
 				throw new WalletConnectionError(error?.message, error);

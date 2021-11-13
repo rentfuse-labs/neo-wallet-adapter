@@ -6,9 +6,22 @@ export enum NeoLineScope {
 	Global = 128,
 }
 
+export enum NeoLineChainId {
+	Neo2MainNet = 1,
+	Neo2TestNet = 2,
+	Neo3MainNet = 3,
+	Neo3TestNet = 4,
+}
+
 export type NeoLineAccount = {
 	address: string;
 	label?: string;
+};
+
+export type NeoLineNetworks = {
+	chainId: NeoLineChainId;
+	defaultNetwork: string;
+	networks: string[];
 };
 
 export type NeoLineSigner = {
@@ -81,8 +94,19 @@ export type NeoLineWriteInvocationResult = {
 	signedTx?: string;
 };
 
+export async function NeoLineN3Init(): Promise<NeoLineN3Interface> {
+	// Use an async pattern as the global NEOLineN3 is not available while
+	// the NEOLine.NEO.EVENT.READY event is still firing:
+	return new Promise((resolve) =>
+		setTimeout(() => {
+			resolve(new (window as any).NEOLineN3.Init());
+		}, 10),
+	);
+}
+
 export interface NeoLineN3Interface {
 	getAccount(): Promise<NeoLineAccount>;
+	getNetworks(): Promise<NeoLineNetworks>;
 
 	invokeRead(params: NeoLineInvokeReadInvocation & { signers: NeoLineSigner[] }): Promise<NeoLineReadInvocationResult>;
 

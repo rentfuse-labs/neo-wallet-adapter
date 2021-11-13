@@ -39,7 +39,7 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 
 	return (
 		<ConnectionProvider endpoint={'TODO'}>
-			<WalletProvider wallets={wallets} autoConnect={true}>
+			<WalletProvider wallets={wallets} autoConnect={false}>
 				{children}
 			</WalletProvider>
 		</ConnectionProvider>

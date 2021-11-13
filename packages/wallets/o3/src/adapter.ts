@@ -3,7 +3,6 @@ import {
 	BaseWalletAdapter,
 	WalletAccountError,
 	WalletDisconnectionError,
-	WalletNotConnectedError,
 	WalletDisconnectedError,
 	Signer,
 	ContractReadInvocation,
@@ -28,8 +27,6 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 
 	// TODO: What?
 	private _options: any;
-
-	private _client: any | undefined;
 
 	constructor(config: O3WalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
@@ -60,14 +57,11 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			if (this.connected || this.connecting) return;
 			this._connecting = true;
 
-			// Assign a new client
-			this._client = neo3Dapi;
-
 			// Taken from o3 specs
 			let account: { address: string; label: string };
 			try {
 				// O3 asks the user to connect the dapp when calling the getAccount method
-				account = await this._client.getAccount();
+				account = await neo3Dapi.getAccount();
 			} catch (error: any) {
 				throw new WalletAccountError(error?.message, error);
 			}
@@ -76,7 +70,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			this._address = account.address;
 
 			// Add a listener to cleanup of disconnection
-			this._client.addEventListener(neo3Dapi.Constants.EventName.DISCONNECTED, this._disconnected);
+			neo3Dapi.addEventListener(neo3Dapi.Constants.EventName.DISCONNECTED, this._disconnected);
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -88,27 +82,20 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	async disconnect(): Promise<void> {
-		const client = this._client;
-		if (client) {
-			try {
-				// TODO: How?
-				//await this._client.disconnect();
+		try {
+			// TODO: How?
+			//await neo3Dapi.disconnect();
 
-				this._address = null;
-				this._client = undefined;
-			} catch (error: any) {
-				this.emit('error', new WalletDisconnectionError(error?.message, error));
-			}
+			this._address = null;
+		} catch (error: any) {
+			this.emit('error', new WalletDisconnectionError(error?.message, error));
 		}
 		this.emit('disconnect');
 	}
 
 	async invokeRead(request: ContractReadInvocation): Promise<ContractReadInvocationResult> {
-		const client = this._client;
-		if (!client) throw new WalletNotConnectedError();
-
 		try {
-			const response = await client.invokeRead({
+			const response = await neo3Dapi.invokeRead({
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
@@ -122,11 +109,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult> {
-		const client = this._client;
-		if (!client) throw new WalletNotConnectedError();
-
 		try {
-			const response = await client.invokeReadMulti({
+			const response = await neo3Dapi.invokeReadMulti({
 				invokeReadArgs: request.invocations,
 				signers: request.signers ? this._signers(request.signers) : [],
 			});
@@ -138,11 +122,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult> {
-		const client = this._client;
-		if (!client) throw new WalletNotConnectedError();
-
 		try {
-			const response = await client.invoke({
+			const response = await neo3Dapi.invoke({
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
@@ -159,11 +140,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult> {
-		const client = this._client;
-		if (!client) throw new WalletNotConnectedError();
-
 		try {
-			const response = await client.invokeMulti({
+			const response = await neo3Dapi.invokeMulti({
 				invokeArgs: request.invocations,
 				signers: request.signers ? this._signers(request.signers) : [],
 				fee: request.fee,
@@ -220,15 +198,11 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 	}
 
 	private _disconnected() {
-		const client = this._client;
-		if (client) {
-			this._client.removeEventListener(neo3Dapi.Constants.EventName.DISCONNECTED);
+		neo3Dapi.removeEventListener(neo3Dapi.Constants.EventName.DISCONNECTED);
 
-			this._address = null;
-			this._client = undefined;
+		this._address = null;
 
-			this.emit('error', new WalletDisconnectedError());
-			this.emit('disconnect');
-		}
+		this.emit('error', new WalletDisconnectedError());
+		this.emit('disconnect');
 	}
 }
