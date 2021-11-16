@@ -92,11 +92,10 @@ For example, to show your logo:
 
 ```tsx
 import { WalletNotConnectedError } from '@rentfuse-labs/neo-wallet-adapter-base';
-import { useConnection, useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
+import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
 import React, { useCallback, useMemo } from 'react';
 
 export const SendOneNeoToRandomAddress = React.useMemo(() => {
-	const { connection } = useConnection();
 	const { address, invoke } = useWallet();
 
 	const onClick = useCallback(async () => {

@@ -18,7 +18,7 @@ const Index: NextPage = () => {
 						Welcome to <a href="https://nextjs.org">Next.js!</a>
 					</h1>
 
-					<div className={'walletButtons'}>
+					<div className={'wallet-buttons'}>
 						<WalletMultiButton />
 						<WalletDisconnectButton />
 					</div>
@@ -185,7 +185,7 @@ const Index: NextPage = () => {
 					}
 				}
 
-				.walletButtons {
+				.wallet-buttons {
 					padding-top: 2rem;
 					display: flex;
 					flex-direction: column;

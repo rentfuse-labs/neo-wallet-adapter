@@ -1,7 +1,7 @@
 import React from 'react';
 import { getNeoLineWallet, getO3Wallet, getWalletConnectWallet } from '@rentfuse-labs/neo-wallet-adapter-wallets';
 import { ReactNode, useMemo } from 'react';
-import { ConnectionProvider, WalletProvider } from '@rentfuse-labs/neo-wallet-adapter-react';
+import { WalletProvider } from '@rentfuse-labs/neo-wallet-adapter-react';
 
 export const WalletConnectionProvider = React.memo(function WalletConnectionProvider({
 	children,
@@ -38,10 +38,8 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 	);
 
 	return (
-		<ConnectionProvider endpoint={'TODO'}>
-			<WalletProvider wallets={wallets} autoConnect={false}>
-				{children}
-			</WalletProvider>
-		</ConnectionProvider>
+		<WalletProvider wallets={wallets} autoConnect={false}>
+			{children}
+		</WalletProvider>
 	);
 });
