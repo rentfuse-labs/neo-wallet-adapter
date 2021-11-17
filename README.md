@@ -23,7 +23,7 @@ yarn add @rentfuse-labs/neo-wallet-adapter-wallets \
 
 ```tsx
 import React, { useMemo } from 'react';
-import { ConnectionProvider, WalletProvider } from '@rentfuse-labs/neo-wallet-adapter-react';
+import { WalletProvider } from '@rentfuse-labs/neo-wallet-adapter-react';
 import { WalletAdapterNetwork } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { getNeoLineWallet, getO3Wallet, getWalletConnect } from '@rentfuse-labs/neo-wallet-adapter-wallets';
 import {
@@ -61,14 +61,12 @@ export const Wallet = React.useMemo(() => {
 	);
 
 	return (
-		<ConnectionProvider endpoint={'TODO'}>
-			<WalletProvider wallets={wallets} autoConnect={true}>
-				<WalletModalProvider>
-					<WalletMultiButton />
-					<WalletDisconnectButton />
-				</WalletModalProvider>
-			</WalletProvider>
-		</ConnectionProvider>
+		<WalletProvider wallets={wallets} autoConnect={true}>
+			<WalletModalProvider>
+				<WalletMultiButton />
+				<WalletDisconnectButton />
+			</WalletModalProvider>
+		</WalletProvider>
 	);
 });
 ```
