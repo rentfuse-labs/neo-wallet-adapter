@@ -1,4 +1,5 @@
 {
+	"private": true,
 	"name": "@rentfuse-labs/neo-wallet-adapter-nextjs-starter",
 	"version": "0.1.0",
 	"author": "Rentfuse Labs",
