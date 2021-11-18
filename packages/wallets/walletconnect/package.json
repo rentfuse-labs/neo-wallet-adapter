@@ -1,5 +1,4 @@
 {
-	"private": true,
 	"name": "@rentfuse-labs/neo-wallet-adapter-walletconnect",
 	"version": "0.1.0",
 	"author": "Rentfuse Labs",
