@@ -43,16 +43,7 @@ export const WalletModal = React.memo(function WalletModal({
 	const onOpenChange = useCallback(() => setExpanded(!expanded), [setExpanded, expanded]);
 
 	return (
-		<Modal
-			title={title}
-			visible={visible}
-			centered={true}
-			onCancel={handleCancel}
-			footer={null}
-			width={320}
-			bodyStyle={{ padding: 0 }}
-			{...props}
-		>
+		<Modal title={title} visible={visible} centered={true} onCancel={handleCancel} footer={null} {...props}>
 			<Menu className="wallet-adapter-modal-menu" inlineIndent={0} mode="inline" onOpenChange={onOpenChange}>
 				{featured.map((wallet) => (
 					<WalletMenuItem
