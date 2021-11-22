@@ -1,0 +1,104 @@
+// Custom antd variables from here -> https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+
+// Main variables of antd package
+@import '~antd/lib/style/themes/default.less';
+
+// Colors
+@primary-color: #00e599;
+@default-color: #eceff1;
+@white: #ffffff;
+@black: #040214;
+
+// Base Scaffolding Variables
+@body-background: @white;
+@component-background: @white;
+@font-family: Helvetica, -apple-system, Arial, sans-serif;
+@code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+@text-color: fade(@black, 85%);
+@text-color-secondary: fade(@black, 45%);
+@text-color-inverse: @white;
+@icon-color: inherit;
+@icon-color-hover: fade(@black, 75%);
+@heading-color: fade(@black, 85%);
+@text-color-dark: fade(@white, 85%);
+@text-color-secondary-dark: fade(@white, 65%);
+@text-selection-bg: @primary-color;
+@font-size-base: 22px;
+@font-size-lg: 16px;
+@font-size-sm: 12px;
+@heading-1-size: ceil(@font-size-base * 2.71);
+@heading-2-size: ceil(@font-size-base * 2.14);
+@heading-3-size: ceil(@font-size-base * 1.71);
+@heading-4-size: ceil(@font-size-base * 1.42);
+@heading-5-size: ceil(@font-size-base * 1.14);
+@line-height-base: 1.5715;
+@border-radius-base: 4px;
+@border-radius-sm: @border-radius-base;
+
+// Vertical paddings
+@padding-lg: 24px; // containers
+@padding-md: 16px; // small containers and buttons
+@padding-sm: 12px; // Form controls and items
+@padding-xs: 8px; // small items
+@padding-xss: 4px; // more small
+
+// Vertical padding for all form controls
+@control-padding-horizontal: @padding-sm;
+@control-padding-horizontal-sm: @padding-xs;
+
+// Vertical margins
+@margin-lg: 24px; // containers
+@margin-md: 16px; // small containers and buttons
+@margin-sm: 12px; // Form controls and items
+@margin-xs: 8px; // small items
+@margin-xss: 4px; // more small
+
+// Height rules
+@height-base: 32px;
+@height-lg: 40px;
+@height-sm: 24px;
+
+// The background colors for active and hover states for things like list items or table cells
+@item-active-bg: @primary-color;
+@item-hover-bg: @default-color;
+
+// Border
+@border-width-base: 1px;
+@border-style-base: solid;
+
+// Avatar
+@avatar-bg: @default-color;
+@avatar-color: @black;
+
+// Layout
+@layout-body-background: @white;
+@layout-header-background: @black;
+@layout-header-color: @white;
+
+// Button
+@btn-font-weight: bold;
+@btn-primary-color: @white;
+@btn-primary-bg: @primary-color;
+@btn-default-color: @black;
+@btn-default-bg: @default-color;
+@btn-default-border: @default-color;
+
+// Modal
+@modal-header-border-color-split: @white;
+@modal-close-color: @black;
+@modal-footer-border-color-split: @white;
+
+// Tag
+@tag-default-bg: @default-color;
+@tag-default-color: @text-color;
+@tag-font-size: @font-size-base;
+@tag-line-height: @line-height-base;
+
+// Link
+@link-color: @text-color;
+@link-hover-color: @primary-color;
+@link-active-color: @primary-color;
+@link-decoration: none;
+@link-hover-decoration: none;
+@link-focus-decoration: none;
+@link-focus-outline: 0;
