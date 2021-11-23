@@ -1,51 +1,12 @@
 # `@rentfuse-labs/neo-wallet-adapter-ant-design`
 
-# Quick Setup (using Create-React-App with craco-less)
-See the [example](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/example) package for more usage.
-
 ## Install
 
-1. Set up craco if you haven't already using the following [guide](https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#installation).
-2. Add `craco-less` into the project `yarn add craco-less`.
-   1. Add it to the `craco.config.js` file
-        ```javascript
-        const CracoLessPlugin = require('craco-less');
-        module.exports = {
-            plugins: [
-                {
-                    plugin: CracoLessPlugin,
-                    options: {
-                        lessLoaderOptions: {
-                            lessOptions: {
-                                modifyVars: { '@primary-color': '#512da8' },
-                                javascriptEnabled: true,
-                            },
-                        },
-                    },
-                },
-            ],
-        };
-        ```
-3. Install these peer dependencies (or skip this if you have them already):
-
-```
-yarn add antd \
-         @ant-design/icons \
-         "@cityofzion/neon-js": "^5.0.0-next.16" \
-         react
-```
-4. Install these dependencies:
-
-```
-yarn add @rentfuse-labs/neo-wallet-adapter-wallets \
-         @rentfuse-labs/neo-wallet-adapter-react \
-         @rentfuse-labs/neo-wallet-adapter-ant-design \
-         @rentfuse-labs/neo-wallet-adapter-base
-```
-
+Watch the starter project for info about how to set up the app!
 
 ## Usage
-Check out usage in the [example](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/starter/example) package.
+
+Check out the usage in the [ant-design-starter](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/starter/ant-design-starter) package.
 
 ## Overrides
 
