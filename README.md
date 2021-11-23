@@ -1,8 +1,10 @@
-# `@rentfuse-labs/neo-wallet-adapter`
+<p align="center">
+  <img width="200" src="./neo-wallet-adapter_icon.png">
+</p>
 
-Modular TypeScript wallet adapters and components for NEO N3 applications.
+<h3 align="center">Modular TypeScript wallet adapters and components for NEO N3 applications.</h3>
 
-## Quick Setup (using React UI)
+## 💾 Quick Setup (with React UI)
 
 There is also [ant-design](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/ui/ant-design) package if you use this component framework.
 
@@ -142,7 +144,7 @@ export const SendOneNeoToRandomAddress = React.useMemo(() => {
 });
 ```
 
-## Packages
+## 🎁 Packages
 
 This library is organized into small packages with few dependencies.
 To add it to your dApp, you only need the core packages and UI components for your chosen framework.
@@ -170,9 +172,10 @@ These packages provide components for common UI frameworks.
 
 These packages provide projects that you can use to start building a dApp with built-in wallet support.
 
-| package                                                                                                           | description                                       | npm                                                                                                                              |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [nextjs-starter](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/starter/nextjs-starter) | [Next.js](https://nextjs.org) project using React | [`@rentfuse-labs/neo-wallet-adapter-nextjs-starter`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-nextjs-starter) |
+| package                                                                                                                   | description                                       | npm                                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| [nextjs-starter](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/starter/nextjs-starter)         | [Next.js](https://nextjs.org) project using React | [`@rentfuse-labs/neo-wallet-adapter-nextjs-starter`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-nextjs-starter)         |
+| [ant-design-starter](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/starter/ant-design-starter) | [Next.js](https://nextjs.org) project using React | [`@rentfuse-labs/neo-wallet-adapter-ant-design-starter`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-ant-design-starter) |
 
 ### Wallets
 
@@ -185,7 +188,7 @@ The core [wallets](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/mast
 | [o3](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/o3)                       | Adapter for [O3](https://o3.network/)                  | [`@rentfuse-labs/neo-wallet-adapter-o3`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-o3)                       |
 | [walletconnect](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/walletconnect) | Adapter for [WalletConnect](https://walletconnect.org) | [`@rentfuse-labs/neo-wallet-adapter-walletconnect`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-walletconnect) |
 
-## Build from Source
+## ⚙️ Build from Source
 
 1. Clone the project:
 
