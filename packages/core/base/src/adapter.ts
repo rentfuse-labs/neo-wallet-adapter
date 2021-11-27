@@ -21,6 +21,23 @@ export type Signer = {
 
 export type StackItemType =
 	| 'Any'
+	| 'Pointer'
+	| 'Boolean'
+	| 'Integer'
+	| 'ByteString'
+	| 'Buffer'
+	| 'Array'
+	| 'Struct'
+	| 'Map'
+	| 'InteropInterface';
+
+export type StackItem = {
+	type: StackItemType;
+	value?: any;
+};
+
+export type ArgumentType =
+	| 'Any'
 	| 'Boolean'
 	| 'Integer'
 	| 'ByteArray'
@@ -34,18 +51,9 @@ export type StackItemType =
 	| 'InteropInterface'
 	| 'Void';
 
-export type StackItem = {
-	type: StackItemType;
-	value?: StackItem[] | string | boolean;
-	iterator?: StackItem[];
-	truncated?: boolean;
-};
-
-export type ArgumentType = 'String' | 'Boolean' | 'Hash160' | 'Hash256' | 'Integer' | 'ByteArray' | 'Array' | 'Address';
-
 export type Argument = {
 	type: ArgumentType;
-	value: string;
+	value: any;
 };
 
 export type ContractReadInvocation = {

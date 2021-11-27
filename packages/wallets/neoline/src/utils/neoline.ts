@@ -34,6 +34,23 @@ export type NeoLineSigner = {
 
 export type NeoLineStackItemType =
 	| 'Any'
+	| 'Pointer'
+	| 'Boolean'
+	| 'Integer'
+	| 'ByteString'
+	| 'Buffer'
+	| 'Array'
+	| 'Struct'
+	| 'Map'
+	| 'InteropInterface';
+
+export type NeoLineStackItem = {
+	type: NeoLineStackItemType;
+	value?: any;
+};
+
+export type NeoLineArgumentType =
+	| 'Any'
 	| 'Boolean'
 	| 'Integer'
 	| 'ByteArray'
@@ -47,26 +64,9 @@ export type NeoLineStackItemType =
 	| 'InteropInterface'
 	| 'Void';
 
-export type NeoLineStackItem = {
-	type: NeoLineStackItemType;
-	value?: NeoLineStackItem[] | string | boolean;
-	iterator?: NeoLineStackItem[];
-	truncated?: boolean;
-};
-
-export type NeoLineArgumentType =
-	| 'String'
-	| 'Boolean'
-	| 'Hash160'
-	| 'Hash256'
-	| 'Integer'
-	| 'ByteArray'
-	| 'Array'
-	| 'Address';
-
 export type NeoLineArgument = {
 	type: NeoLineArgumentType;
-	value: string;
+	value: any;
 };
 
 export type NeoLineInvokeReadInvocation = {
