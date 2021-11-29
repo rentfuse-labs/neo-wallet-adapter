@@ -118,7 +118,7 @@ export interface NeoLineN3Interface {
 		params: NeoLineInvokeReadInvocation & NeoLineInvokeWriteInvocation & { signers: NeoLineSigner[] },
 	): Promise<NeoLineWriteInvocationResult>;
 
-	invokeMulti(
+	invokeMultiple(
 		params: { invokeArgs: NeoLineInvokeReadInvocation[] } & NeoLineInvokeWriteInvocation & { signers: NeoLineSigner[] },
 	): Promise<NeoLineWriteInvocationResult>;
 }
