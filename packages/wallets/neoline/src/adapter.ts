@@ -184,7 +184,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		if (!client) throw new WalletNotConnectedError();
 
 		try {
-			const response = await client.invokeMulti({
+			const response = await client.invokeMultiple({
 				invokeArgs: request.invocations,
 				signers: request.signers ? this._signers(request.signers) : [],
 				fee: request.fee,
