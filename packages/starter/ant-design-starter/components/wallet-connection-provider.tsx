@@ -26,7 +26,7 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 					},
 				},
 				logger: 'debug',
-				relayProvider: 'wss://relay.walletconnect.org',
+				relayProvider: 'wss://connect.coz.io',
 			}),
 		],
 		[],
