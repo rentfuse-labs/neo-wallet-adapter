@@ -93,52 +93,54 @@ For example, to show your logo:
 ```tsx
 import { WalletNotConnectedError } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
-import React, { useCallback, useMemo } from 'react';
+import { u, sc, wallet } from '@cityofzion/neon-js';
+import React, { useCallback } from 'react';
 
-export const SendOneNeoToRandomAddress = React.useMemo(() => {
-	const { address, invoke } = useWallet();
+export const ButtonExample = React.memo(function ButtonExample() {
+	const { address, connected, invoke } = useWallet();
 
 	const onClick = useCallback(async () => {
-		if (!address) throw new WalletNotConnectedError();
+		if (!address || !connected) throw new WalletNotConnectedError();
 
-		const request = {
+		// Construct the request and invoke it
+		const result = await invoke({
 			scriptHash: 'ef4073a0f2b305a38ec4050e4d3d28bc40ea63f5',
 			operation: 'transfer',
 			args: [
 				{
-					type: 'Address',
-					value: 'NaUjKgf5vMuFt7Ffgfffcpc41uH3adx1jq',
+					type: 'Hash160',
+					value: sc.ContractParam.hash160(address).toJson().value,
 				},
 				{
-					type: 'Address',
-					value: 'NaUjKgf5vMuFt7Ffgfffcpc41uH3adx1jq',
+					type: 'Hash160',
+					value: sc.ContractParam.hash160('NaUjKgf5vMuFt7Ffgfffcpc41uH3adx1jq').toJson().value,
 				},
 				{
 					type: 'Integer',
-					value: '1',
+					value: sc.ContractParam.integer(1).toJson().value,
 				},
 				{
 					type: 'Any',
 					value: null,
 				},
 			],
-			fee: '0.0001',
-			broadcastOverride: false,
 			signers: [
 				{
-					account: '2cab903ff032ac693f8514581665be534beac39f',
-					scopes: 1,
+					account: wallet.getScriptHashFromAddress(address),
+					scope: WitnessScope.CalledByEntry,
 				},
 			],
-		};
+		});
 
-		// Invoke the contract call and get the result
-		const result = await invoke(request);
-	}, [address, invoke]);
+		// Optional: Wait for the transaction to be confirmed onchain
+		if (result.data?.txId) {
+			await waitTx(settingsStore.network.rpcAddress, result.data?.txId);
+		}
+	}, [address, connected, invoke]);
 
 	return (
-		<button onClick={onClick} disabled={!address}>
-			Send 1 Neo to a random address!
+		<button onClick={onClick} disabled={!address || !connected}>
+			{'Send 1 Neo to a random address!'}
 		</button>
 	);
 });
