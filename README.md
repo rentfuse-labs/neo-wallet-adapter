@@ -91,7 +91,7 @@ For example, to show your logo:
 ### Usage
 
 ```tsx
-import { WalletNotConnectedError } from '@rentfuse-labs/neo-wallet-adapter-base';
+import { waitTx, WitnessScope, WalletNotConnectedError } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
 import { u, sc, wallet } from '@cityofzion/neon-js';
 import React, { useCallback } from 'react';
