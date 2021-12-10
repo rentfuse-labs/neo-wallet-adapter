@@ -96,7 +96,7 @@ import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
 import { u, sc, wallet } from '@cityofzion/neon-js';
 import React, { useCallback } from 'react';
 
-export const ButtonExample = React.memo(function ButtonExample() {
+export const NeoSendButton = React.memo(function NeoSendButton() {
 	const { address, connected, invoke } = useWallet();
 
 	const onClick = useCallback(async () => {
@@ -134,13 +134,13 @@ export const ButtonExample = React.memo(function ButtonExample() {
 
 		// Optional: Wait for the transaction to be confirmed onchain
 		if (result.data?.txId) {
-			await waitTx(settingsStore.network.rpcAddress, result.data?.txId);
+			await waitTx('NETWORK_RPC_ADDRESS_HERE', result.data?.txId);
 		}
 	}, [address, connected, invoke]);
 
 	return (
 		<button onClick={onClick} disabled={!address || !connected}>
-			{'Send 1 Neo to a random address!'}
+			{'Send 1 Neo!'}
 		</button>
 	);
 });
