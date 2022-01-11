@@ -94,6 +94,17 @@ export type NeoLineWriteInvocationResult = {
 	signedTx?: string;
 };
 
+export type NeoLineSignMessageInvocation = {
+	message: string;
+};
+
+export type NeoLineSignMessageInvocationResult = {
+	publicKey: string;
+	data: string;
+	salt: string;
+	message: string;
+};
+
 export async function NeoLineN3Init(): Promise<NeoLineN3Interface> {
 	// Use an async pattern as the global NEOLineN3 is not available while
 	// the NEOLine.NEO.EVENT.READY event is still firing:
@@ -104,9 +115,18 @@ export async function NeoLineN3Init(): Promise<NeoLineN3Interface> {
 	);
 }
 
+export async function NeoLineInit(): Promise<NeoLineInterface> {
+	// Use an async pattern as the global NEOLineN3 is not available while
+	// the NEOLine.NEO.EVENT.READY event is still firing:
+	return new Promise((resolve) =>
+		setTimeout(() => {
+			resolve(new (window as any).NEOLine.Init());
+		}, 10),
+	);
+}
+
 export interface NeoLineN3Interface {
 	getAccount(): Promise<NeoLineAccount>;
-	getNetworks(): Promise<NeoLineNetworks>;
 
 	invokeRead(params: NeoLineInvokeReadInvocation & { signers: NeoLineSigner[] }): Promise<NeoLineReadInvocationResult>;
 
@@ -121,4 +141,10 @@ export interface NeoLineN3Interface {
 	invokeMultiple(
 		params: { invokeArgs: NeoLineInvokeReadInvocation[] } & NeoLineInvokeWriteInvocation & { signers: NeoLineSigner[] },
 	): Promise<NeoLineWriteInvocationResult>;
+
+	signMessage(params: NeoLineSignMessageInvocation): Promise<NeoLineSignMessageInvocationResult>;
+}
+
+export interface NeoLineInterface {
+	getNetworks(): Promise<NeoLineNetworks>;
 }
