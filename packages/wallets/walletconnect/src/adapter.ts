@@ -285,7 +285,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 
 	async getNetworks(): Promise<GetNetworksInvocationResult> {
 		// TODO
-		throw 'Not Implemented';
+		throw new Error('Not Implemented');
 	}
 
 	private async _sendRequest(
