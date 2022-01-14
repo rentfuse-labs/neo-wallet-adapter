@@ -231,6 +231,12 @@ export const WalletProvider = React.memo(function WalletProvider({
 		[adapter, onError, connected],
 	);
 
+	const getNetworks = useCallback(async () => {
+		if (!adapter) throw onError(new WalletNotSelectedError());
+		if (!connected) throw onError(new WalletNotConnectedError());
+		return await adapter.getNetworks();
+	}, [adapter, onError, connected]);
+
 	// Setup and teardown event listeners when the adapter changes
 	useEffect(() => {
 		if (adapter) {
@@ -266,6 +272,7 @@ export const WalletProvider = React.memo(function WalletProvider({
 				invokeReadMulti,
 				invoke,
 				invokeMulti,
+				getNetworks,
 			}}
 		>
 			{children}

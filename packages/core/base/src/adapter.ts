@@ -111,6 +111,19 @@ export type ContractWriteInvocationResult = {
 	code?: string;
 };
 
+export type GetNetworksResultData = {
+	networks: string[];
+	chainId: number;
+	defaultNetwork: string;
+};
+
+export type GetNetworksInvocationResult = {
+	status: 'success' | 'fail' | 'error';
+	data?: GetNetworksResultData | null;
+	message?: string;
+	code?: string;
+};
+
 export interface WalletAdapterEvents {
 	ready(): void;
 	connect(): void;
@@ -130,6 +143,7 @@ export interface WalletAdapterProps {
 	invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult>;
 	invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
+	getNetworks(): Promise<GetNetworksInvocationResult>;
 }
 
 export type WalletAdapter = WalletAdapterProps & EventEmitter<WalletAdapterEvents>;
@@ -146,4 +160,5 @@ export abstract class BaseWalletAdapter extends EventEmitter<WalletAdapterEvents
 	abstract invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult>;
 	abstract invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	abstract invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
+	abstract getNetworks(): Promise<GetNetworksInvocationResult>;
 }

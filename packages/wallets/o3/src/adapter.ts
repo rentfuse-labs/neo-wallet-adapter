@@ -11,6 +11,7 @@ import {
 	ContractWriteInvocationMulti,
 	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
+	GetNetworksInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
@@ -155,6 +156,16 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
+	async getNetworks(): Promise<GetNetworksInvocationResult> {
+		try {
+			const response = await neo3Dapi.getNetworks();
+			return this._responseToGetNetworksResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
+	}
+
 	private _signers(signers: Signer[]): any[] {
 		return signers.map((signer) => ({
 			account: signer.account,
@@ -193,6 +204,17 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				txId: response.txid,
+			},
+		};
+	}
+
+	private _responseToGetNetworksResult(response: any): GetNetworksInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				networks: response.networks,
+				chainId: response.chainId,
+				defaultNetwork: response.defaultNetwork,
 			},
 		};
 	}
