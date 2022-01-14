@@ -111,6 +111,24 @@ export type ContractWriteInvocationResult = {
 	code?: string;
 };
 
+export type SignMessageInvocation = {
+	message: string;
+};
+
+export type SignMessageResultData = {
+	publicKey: string;
+	data: string;
+	salt: string;
+	message: string;
+};
+
+export type SignMessageInvocationResult = {
+	status: 'success' | 'fail' | 'error';
+	data?: SignMessageResultData | null;
+	message?: string;
+	code?: string;
+};
+
 export interface WalletAdapterEvents {
 	ready(): void;
 	connect(): void;
@@ -130,6 +148,7 @@ export interface WalletAdapterProps {
 	invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult>;
 	invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
+	signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult>;
 }
 
 export type WalletAdapter = WalletAdapterProps & EventEmitter<WalletAdapterEvents>;
@@ -146,4 +165,5 @@ export abstract class BaseWalletAdapter extends EventEmitter<WalletAdapterEvents
 	abstract invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult>;
 	abstract invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	abstract invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
+	abstract signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult>;
 }
