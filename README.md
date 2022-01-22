@@ -217,3 +217,7 @@ yarn build
 cd packages/starter/react-ui-starter
 yarn start
 ```
+
+### Development notes
+
+Dev dependencies are equal to peer dependencies to be used while developing.

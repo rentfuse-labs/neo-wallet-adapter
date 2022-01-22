@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-wallets",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -21,15 +21,15 @@
 		"clean": "shx rm -rf lib/*",
 		"build": "yarn clean && tsc"
 	},
-	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.1"
-	},
 	"dependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-walletconnect": "^0.1.1",
-		"@rentfuse-labs/neo-wallet-adapter-neoline": "^0.1.2",
-		"@rentfuse-labs/neo-wallet-adapter-o3": "^0.1.1"
+		"@rentfuse-labs/neo-wallet-adapter-walletconnect": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-neoline": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-o3": "^0.2.*"
+	},
+	"peerDependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.2.*"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.2.*"
 	}
 }
