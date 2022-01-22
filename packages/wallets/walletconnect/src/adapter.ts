@@ -13,6 +13,8 @@ import {
 	ContractWriteInvocationResult,
 	WalletNotConnectedError,
 	WalletWindowClosedError,
+	SignMessageInvocation,
+	SignMessageInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import Client, { CLIENT_EVENTS } from '@walletconnect/client';
 import QRCodeModal from '@walletconnect/qrcode-modal';
@@ -280,6 +282,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			this.emit('error', error);
 			throw error;
 		}
+	}
+
+	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
+		// TODO
+		throw new Error('Not Implemented');
 	}
 
 	private async _sendRequest(

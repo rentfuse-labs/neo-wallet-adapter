@@ -4,6 +4,7 @@ import {
 	NeoLineN3Interface,
 	NeoLineReadInvocationResult,
 	NeoLineSigner,
+	NeoLineSignMessageInvocationResult,
 	NeoLineWriteInvocationResult,
 } from './utils/neoline';
 import {
@@ -23,6 +24,8 @@ import {
 	ContractWriteInvocationMulti,
 	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
+	SignMessageInvocation,
+	SignMessageInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
@@ -198,6 +201,21 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
+	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
+		const client = this._client;
+		if (!client) throw new WalletNotConnectedError();
+
+		try {
+			const response = await client.signMessage({
+				message: request.message,
+			});
+			return this._responseToSignMessageResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
+	}
+
 	private _signers(signers: Signer[]): NeoLineSigner[] {
 		return signers.map((signer) => ({
 			account: signer.account,
@@ -236,6 +254,18 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				txId: response.txid,
+			},
+		};
+	}
+
+	private _responseToSignMessageResult(response: NeoLineSignMessageInvocationResult): SignMessageInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				publicKey: response.publicKey,
+				data: response.data,
+				salt: response.salt,
+				message: response.message,
 			},
 		};
 	}

@@ -11,6 +11,8 @@ import {
 	ContractWriteInvocationMulti,
 	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
+	SignMessageInvocationResult,
+	SignMessageInvocation,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
@@ -155,6 +157,18 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
+	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
+		try {
+			const response = await neo3Dapi.signMessage({
+				message: request.message,
+			});
+			return this._responseToSignMessageResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
+	}
+
 	private _signers(signers: Signer[]): any[] {
 		return signers.map((signer) => ({
 			account: signer.account,
@@ -193,6 +207,18 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				txId: response.txid,
+			},
+		};
+	}
+
+	private _responseToSignMessageResult(response: any): SignMessageInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				publicKey: response.publicKey,
+				data: response.data,
+				salt: response.salt,
+				message: response.message,
 			},
 		};
 	}
