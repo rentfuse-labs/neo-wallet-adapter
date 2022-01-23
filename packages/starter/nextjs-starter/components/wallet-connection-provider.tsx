@@ -16,8 +16,8 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 			getO3Wallet(),
 			getWalletConnectWallet({
 				options: {
-					chainId: 'neo3:testnet',
-					methods: ['invokefunction'],
+					chains: ['neo3:testnet'], // the blockchains your dapp accepts to connect
+					methods: ['invokeFunction', 'testInvoke', 'signMessage'],
 					appMetadata: {
 						name: 'MyApplicationName', // your application name to be displayed on the wallet
 						description: 'My Application description', // description to be shown on the wallet

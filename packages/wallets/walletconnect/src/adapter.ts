@@ -81,7 +81,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 							// Eheh just show that!
 						});
 						// alternatively you can show Neon Wallet Connect's website, which is more welcoming
-						//window.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank').focus();
+						//window?.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus();
 					},
 					onDeleted: () => {
 						// here is where you describe a logout callback
@@ -91,6 +91,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 
 				// Load any existing connection, it should be called after the initialization, to reestablish connections made previously
 				await walletConnectInstance.loadSession();
+
 				// If the session has not been loaded try to load it
 				if (!walletConnectInstance.session) {
 					// If we're here we need to connect
