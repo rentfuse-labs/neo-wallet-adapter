@@ -14,7 +14,7 @@ export enum WitnessScope {
 export type Signer = {
 	// ScriptHash of the address
 	account: string;
-	scope: WitnessScope;
+	scopes: WitnessScope;
 	allowedContracts?: string[];
 	allowedGroups?: string[];
 };
