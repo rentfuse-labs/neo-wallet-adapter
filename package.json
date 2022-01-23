@@ -30,7 +30,7 @@
 		"lerna:bootstrap": "lerna bootstrap",
 		"lerna:test": "lerna run test",
 		"lerna:publish": "lerna publish from-package",
-		"starter:nextjs:dev": "cd packages/starter/nextjs-starter && yarn run dev",
+		"starter:nextjs-dev": "cd packages/starter/nextjs-starter && yarn run dev",
 		"deploy": "yarn deploy:docs && yarn deploy:example",
 		"deploy:docs": "yarn docs && gh-pages --dist docs --dotfiles",
 		"deploy:example": "gh-pages --dist packages/starter/example/out --dest example --dotfiles",
@@ -41,10 +41,7 @@
 		"nuke": "shx rm -rf {.,packages/*/*}/{node_modules,yarn.lock}"
 	},
 	"devDependencies": {
-		"@types/eslint": "^7.2.13",
-		"@types/eslint-plugin-prettier": "^3.1.0",
 		"@types/node": "^16.9.1",
-		"@types/prettier": "^2.3.1",
 		"@typescript-eslint/eslint-plugin": "^4.31.0",
 		"@typescript-eslint/parser": "^4.31.0",
 		"eslint": "^7.29.0",
@@ -57,5 +54,12 @@
 		"tslib": "^2.3.0",
 		"typedoc": "^0.22.2",
 		"typescript": "^4.4.3"
+	},
+	"resolutions": {
+		"@walletconnect/client": "2.0.0-beta.17",
+		"@walletconnect/jsonrpc-utils": "^1.0.0",
+		"@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
+		"@walletconnect/types": "2.0.0-beta.17",
+		"@walletconnect/utils": "2.0.0-beta.17"
 	}
 }

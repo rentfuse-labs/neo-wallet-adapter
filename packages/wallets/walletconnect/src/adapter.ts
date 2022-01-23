@@ -1,39 +1,22 @@
+import { RpcCallResult, SignedMessage, WcConnectOptions, WcSdk } from '@cityofzion/wallet-connect-sdk-core';
 import {
 	BaseWalletAdapter,
-	WalletError,
-	WalletConnectionError,
-	WalletAccountError,
-	WalletDisconnectionError,
-	WalletDisconnectedError,
 	ContractReadInvocation,
 	ContractReadInvocationMulti,
+	ContractReadInvocationResult,
 	ContractWriteInvocation,
 	ContractWriteInvocationMulti,
-	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
-	WalletNotConnectedError,
-	WalletWindowClosedError,
 	SignMessageInvocation,
 	SignMessageInvocationResult,
+	WalletAccountError,
+	WalletConnectionError,
+	WalletDisconnectedError,
+	WalletDisconnectionError,
+	WalletError,
+	WalletNotConnectedError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
-import Client, { CLIENT_EVENTS } from '@walletconnect/client';
 import QRCodeModal from '@walletconnect/qrcode-modal';
-import { SessionTypes, PairingTypes, AppMetadata } from '@walletconnect/types';
-import { ERROR } from '@walletconnect/utils';
-import { RequestArguments } from '@walletconnect/jsonrpc-utils';
-
-interface WcConnectOptions {
-	chainId: string;
-	topic?: string;
-	chains?: string[];
-	appMetadata: AppMetadata;
-	methods: string[];
-}
-
-interface RpcCallResult {
-	method: string;
-	result: any;
-}
 
 // The configuration object used to create an instance of the wallet
 export interface WalletConnectWalletAdapterConfig {
@@ -42,8 +25,6 @@ export interface WalletConnectWalletAdapterConfig {
 	relayProvider: string;
 }
 
-// The main class for the wallet
-// Inspired from the beautiful work of https://github.com/CityOfZion/wallet-connect-client <3
 export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _address: string | null;
 	private _connecting: boolean;
@@ -52,8 +33,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _logger: string;
 	private _relayProvider: string;
 
-	private _client: Client | undefined;
-	private _session: SessionTypes.Created | undefined;
+	private _walletConnectInstance: WcSdk | undefined;
 
 	constructor(config: WalletConnectWalletAdapterConfig) {
 		super();
@@ -86,75 +66,48 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			if (this.connected || this.connecting) return;
 			this._connecting = true;
 
-			let client: Client;
-			let session: SessionTypes.Settled;
+			let walletConnectInstance: WcSdk;
 			try {
-				client = await Client.init({
-					logger: this._logger,
-					relayProvider: this._relayProvider,
-				});
+				// Create walletconnect coz instance
+				walletConnectInstance = new WcSdk();
+				// Initialize it
+				await walletConnectInstance.initClient(this._logger, this._relayProvider);
 
-				// eslint-disable-next-line no-async-promise-executor
-				session = await new Promise<SessionTypes.Settled>(async (resolve, reject) => {
-					let session: SessionTypes.Settled;
-
-					async function onPairingProposal(proposal: PairingTypes.Proposal) {
-						const { uri } = proposal.signal.params;
+				// Subscribe to wc events
+				walletConnectInstance.subscribeToEvents({
+					onProposal: (uri: string) => {
+						// show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
 						QRCodeModal.open(uri, () => {
-							cleanup();
-							reject(new WalletWindowClosedError());
+							// Eheh just show that!
 						});
-					}
-
-					async function onPairingCreated(created: PairingTypes.Created) {
-						cleanup();
-						resolve(session);
-					}
-
-					function cleanup() {
-						client.off(CLIENT_EVENTS.pairing.proposal, onPairingProposal);
-						client.off(CLIENT_EVENTS.pairing.created, onPairingCreated);
-					}
-
-					try {
-						client.on(CLIENT_EVENTS.pairing.proposal, onPairingProposal);
-						client.on(CLIENT_EVENTS.pairing.created, onPairingCreated);
-
-						// Connect and obtain the session
-						session = await client.connect({
-							metadata: this._options.appMetadata,
-							pairing: this._options.topic ? { topic: this._options.topic } : undefined,
-							permissions: {
-								blockchain: {
-									chains: this._options.chains ?? (this._options.chainId ? [this._options.chainId] : []),
-								},
-								jsonrpc: {
-									methods: this._options.methods,
-								},
-							},
-						});
-					} catch (error: any) {
-						cleanup();
-						reject(error);
-					}
+						// alternatively you can show Neon Wallet Connect's website, which is more welcoming
+						//window?.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus();
+					},
+					onDeleted: () => {
+						// here is where you describe a logout callback
+						this._disconnected();
+					},
 				});
+
+				// Load any existing connection, it should be called after the initialization, to reestablish connections made previously
+				await walletConnectInstance.loadSession();
+
+				// If the session has not been loaded try to load it
+				if (!walletConnectInstance.session) {
+					// If we're here we need to connect
+					await walletConnectInstance.connect(this._options);
+					// the promise will be resolved after the connection is accepted or refused, you can close the QRCode modal here
+					QRCodeModal.close();
+				}
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
 				throw new WalletConnectionError(error?.message, error);
 			}
 
-			if (!session.state.accounts.length) throw new WalletAccountError();
+			if (!walletConnectInstance.session) throw new WalletAccountError();
 
-			// Get info and take account address
-			const info = session.state.accounts[0].split(':');
-			if (!info || info.length < 3) throw new WalletAccountError();
-			const address = info[2];
-
-			client.on(CLIENT_EVENTS.session.deleted, this._disconnected);
-
-			this._address = address;
-			this._client = client;
-			this._session = session;
+			this._address = walletConnectInstance.accountAddress;
+			this._walletConnectInstance = walletConnectInstance;
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -166,20 +119,16 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async disconnect(): Promise<void> {
-		const client = this._client;
-		const session = this._session;
+		const walletConnectInstance = this._walletConnectInstance;
 
-		if (client && session) {
-			this._address = null;
-			this._client = undefined;
-
+		if (walletConnectInstance && walletConnectInstance.session) {
 			try {
-				await client.disconnect({
-					topic: session.topic,
-					reason: ERROR.USER_DISCONNECTED.format(),
-				});
+				await walletConnectInstance.disconnect();
 			} catch (error: any) {
 				this.emit('error', new WalletDisconnectionError(error?.message, error));
+			} finally {
+				this._address = null;
+				this._walletConnectInstance = undefined;
 			}
 		}
 
@@ -187,24 +136,19 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeRead(request: ContractReadInvocation): Promise<ContractReadInvocationResult> {
-		const client = this._client;
-		const session = this._session;
-		if (!client || !session) throw new WalletNotConnectedError();
+		const walletConnectInstance = this._walletConnectInstance;
+		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
-			const response = await this._sendRequest(client, session, this._options.chainId, {
-				method: 'testInvoke',
-				params: [
-					{
-						scriptHash: request.scriptHash,
-						operation: request.operation,
-						args: request.args,
-						abortOnFail: request.abortOnFail,
-						signer: request.signers?.[0],
-					},
-				],
-			});
-
+			const response = await walletConnectInstance.testInvoke(
+				{
+					scriptHash: request.scriptHash,
+					operation: request.operation,
+					args: request.args as any,
+					abortOnFail: request.abortOnFail,
+				},
+				request.signers as any,
+			);
 			return this._responseToReadResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
@@ -213,21 +157,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeReadMulti(request: ContractReadInvocationMulti): Promise<ContractReadInvocationResult> {
-		const client = this._client;
-		const session = this._session;
-		if (!client || !session) throw new WalletNotConnectedError();
+		const walletConnectInstance = this._walletConnectInstance;
+		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
-			const response = await this._sendRequest(client, session, this._options.chainId, {
-				method: 'multiTestInvoke',
-				params: [
-					{
-						invocations: request.invocations,
-						signer: request.signers,
-					},
-				],
-			});
-
+			const response = await walletConnectInstance.testInvoke(request.invocations as any, request.signers as any);
 			return this._responseToReadResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
@@ -236,24 +170,19 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult> {
-		const client = this._client;
-		const session = this._session;
-		if (!client || !session) throw new WalletNotConnectedError();
+		const walletConnectInstance = this._walletConnectInstance;
+		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
-			const response = await this._sendRequest(client, session, this._options.chainId, {
-				method: 'invokefunction',
-				params: [
-					{
-						scriptHash: request.scriptHash,
-						operation: request.operation,
-						args: request.args,
-						abortOnFail: request.abortOnFail,
-						signer: request.signers?.[0],
-					},
-				],
-			});
-
+			const response = await walletConnectInstance.invokeFunction(
+				{
+					scriptHash: request.scriptHash,
+					operation: request.operation,
+					args: request.args as any,
+					abortOnFail: request.abortOnFail,
+				},
+				request.signers as any,
+			);
 			return this._responseToWriteResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
@@ -262,21 +191,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult> {
-		const client = this._client;
-		const session = this._session;
-		if (!client || !session) throw new WalletNotConnectedError();
+		const walletConnectInstance = this._walletConnectInstance;
+		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
-			const response = await this._sendRequest(client, session, this._options.chainId, {
-				method: 'multiInvoke',
-				params: [
-					{
-						signer: request.signers,
-						invocations: request.invocations,
-					},
-				],
-			});
-
+			const response = await walletConnectInstance.invokeFunction(request.invocations as any, request.signers as any);
 			return this._responseToWriteResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
@@ -285,36 +204,19 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
-		// TODO
-		throw new Error('Not Implemented');
-	}
+		const walletConnectInstance = this._walletConnectInstance;
+		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
-	private async _sendRequest(
-		client: Client,
-		session: SessionTypes.Created,
-		chainId: string,
-		request: RequestArguments,
-	): Promise<RpcCallResult> {
 		try {
-			const result = await client.request({
-				topic: session.topic,
-				chainId,
-				request,
-			});
-
-			return {
-				method: request.method,
-				result,
-			};
-		} catch (error) {
-			return {
-				method: request.method,
-				result: { error },
-			};
+			const response = await walletConnectInstance.signMessage(request.message);
+			return this._responseToSignMessageResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
 		}
 	}
 
-	private _responseToReadResult(response: RpcCallResult): ContractReadInvocationResult {
+	private _responseToReadResult(response: RpcCallResult<any>): ContractReadInvocationResult {
 		// If the state is halt it means that everything went well
 		if (response.result.state === 'HALT') {
 			return {
@@ -333,7 +235,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _responseToWriteResult(response: RpcCallResult): ContractWriteInvocationResult {
+	private _responseToWriteResult(response: RpcCallResult<any>): ContractWriteInvocationResult {
 		// If the state is halt it means that everything went well
 		if (response.result.state === 'HALT') {
 			return {
@@ -349,17 +251,26 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			status: 'error',
 			message: response.result.error?.message,
 			code: response.result.error?.code,
+		};
+	}
+
+	private _responseToSignMessageResult(response: RpcCallResult<SignedMessage>): SignMessageInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				publicKey: response.result.publicKey,
+				data: response.result.data,
+				salt: response.result.salt,
+				message: response.result.messageHex,
+			},
 		};
 	}
 
 	private _disconnected() {
-		const client = this._client;
-		if (client) {
-			client.off(CLIENT_EVENTS.session.deleted, this._disconnected);
-
+		const walletConnectInstance = this._walletConnectInstance;
+		if (walletConnectInstance) {
 			this._address = null;
-			this._client = undefined;
-			this._session = undefined;
+			this._walletConnectInstance = undefined;
 
 			this.emit('error', new WalletDisconnectedError());
 			this.emit('disconnect');

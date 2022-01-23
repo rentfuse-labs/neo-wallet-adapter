@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-react-ui",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -21,19 +21,19 @@
 		"build": "yarn clean && tsc"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.1",
-		"@rentfuse-labs/neo-wallet-adapter-react": "^0.1.2",
-		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.1.2",
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-react": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.2.*",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.1.1",
-		"@rentfuse-labs/neo-wallet-adapter-react": "^0.1.2",
-		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.1.2",
-		"@types/react": "^17.0.24",
-		"@types/react-dom": "^17.0.11",
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-react": "^0.2.*",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.2.*",
 		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react-dom": "^17.0.2",
+		"@types/react": "^17.0.24",
+		"@types/react-dom": "^17.0.11"
 	}
 }

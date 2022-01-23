@@ -1,32 +1,29 @@
 import {
+	BaseWalletAdapter,
+	ContractReadInvocation,
+	ContractReadInvocationMulti,
+	ContractReadInvocationResult,
+	ContractWriteInvocation,
+	ContractWriteInvocationMulti,
+	ContractWriteInvocationResult,
+	pollUntilReady,
+	SignMessageInvocation,
+	SignMessageInvocationResult,
+	WalletAccountError,
+	WalletConnectionError,
+	WalletDisconnectedError,
+	WalletDisconnectionError,
+	WalletError,
+	WalletNotConnectedError,
+} from '@rentfuse-labs/neo-wallet-adapter-base';
+import {
 	NeoLineAccount,
 	NeoLineN3Init,
 	NeoLineN3Interface,
 	NeoLineReadInvocationResult,
-	NeoLineSigner,
 	NeoLineSignMessageInvocationResult,
 	NeoLineWriteInvocationResult,
 } from './utils/neoline';
-import {
-	BaseWalletAdapter,
-	pollUntilReady,
-	WalletNotFoundError,
-	WalletError,
-	WalletConnectionError,
-	WalletAccountError,
-	WalletDisconnectionError,
-	WalletNotConnectedError,
-	WalletDisconnectedError,
-	Signer,
-	ContractReadInvocation,
-	ContractReadInvocationMulti,
-	ContractWriteInvocation,
-	ContractWriteInvocationMulti,
-	ContractReadInvocationResult,
-	ContractWriteInvocationResult,
-	SignMessageInvocation,
-	SignMessageInvocationResult,
-} from '@rentfuse-labs/neo-wallet-adapter-base';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -136,7 +133,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -152,7 +149,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await client.invokeReadMulti({
 				invokeReadArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -170,7 +167,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -189,7 +186,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await client.invokeMultiple({
 				invokeArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -214,15 +211,6 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			this.emit('error', error);
 			throw error;
 		}
-	}
-
-	private _signers(signers: Signer[]): NeoLineSigner[] {
-		return signers.map((signer) => ({
-			account: signer.account,
-			scopes: signer.scope,
-			allowedContracts: signer.allowedContracts,
-			allowedGroups: signer.allowedGroups,
-		}));
 	}
 
 	private _responseToReadResult(response: NeoLineReadInvocationResult): ContractReadInvocationResult {
