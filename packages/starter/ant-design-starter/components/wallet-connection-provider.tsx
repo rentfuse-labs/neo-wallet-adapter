@@ -16,17 +16,17 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 			getO3Wallet(),
 			getWalletConnectWallet({
 				options: {
-					chainId: 'neo3:testnet',
-					methods: ['invokefunction'],
+					chains: ['neo3:testnet'], // ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
+					methods: ['invokeFunction'], // ['invokeFunction',any other method name present on the RpcServer eg. getversion]
 					appMetadata: {
-						name: 'MyApplicationName', // your application name to be displayed on the wallet
-						description: 'My Application description', // description to be shown on the wallet
-						url: 'https://myapplicationdescription.app/', // url to be linked on the wallet
-						icons: ['https://myapplicationdescription.app/myappicon.png'], // icon to be shown on the wallet
+						name: 'Example',
+						description: 'Example description',
+						url: 'https://neonova.space',
+						icons: ['https://raw.githubusercontent.com/rentfuse-labs/neonova/main/neonova-icon.png'],
 					},
 				},
 				logger: 'debug',
-				relayProvider: 'wss://connect.coz.io',
+				relayProvider: 'wss://relay.walletconnect.org',
 			}),
 		],
 		[],
