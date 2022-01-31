@@ -14,7 +14,7 @@ export enum WitnessScope {
 export type Signer = {
 	// ScriptHash of the address
 	account: string;
-	scope: WitnessScope;
+	scopes: WitnessScope;
 	allowedContracts?: string[];
 	allowedGroups?: string[];
 };
@@ -124,6 +124,24 @@ export type GetNetworksInvocationResult = {
 	code?: string;
 };
 
+export type SignMessageInvocation = {
+	message: string;
+};
+
+export type SignMessageResultData = {
+	publicKey: string;
+	data: string;
+	salt: string;
+	message: string;
+};
+
+export type SignMessageInvocationResult = {
+	status: 'success' | 'fail' | 'error';
+	data?: SignMessageResultData | null;
+	message?: string;
+	code?: string;
+};
+
 export interface WalletAdapterEvents {
 	ready(): void;
 	connect(): void;
@@ -144,6 +162,7 @@ export interface WalletAdapterProps {
 	invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
 	getNetworks(): Promise<GetNetworksInvocationResult>;
+	signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult>;
 }
 
 export type WalletAdapter = WalletAdapterProps & EventEmitter<WalletAdapterEvents>;
@@ -161,4 +180,5 @@ export abstract class BaseWalletAdapter extends EventEmitter<WalletAdapterEvents
 	abstract invoke(request: ContractWriteInvocation): Promise<ContractWriteInvocationResult>;
 	abstract invokeMulti(request: ContractWriteInvocationMulti): Promise<ContractWriteInvocationResult>;
 	abstract getNetworks(): Promise<GetNetworksInvocationResult>;
+	abstract signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult>;
 }

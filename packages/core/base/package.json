@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-base",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -20,11 +20,11 @@
 		"clean": "shx rm -rf lib/*",
 		"build": "yarn clean && tsc"
 	},
-	"peerDependencies": {
-		"@cityofzion/neon-js": "^5.0.0-next.16"
-	},
 	"dependencies": {
 		"eventemitter3": "^4.0.7"
+	},
+	"peerDependencies": {
+		"@cityofzion/neon-js": "^5.0.0-next.16"
 	},
 	"devDependencies": {
 		"@cityofzion/neon-js": "^5.0.0-next.16"

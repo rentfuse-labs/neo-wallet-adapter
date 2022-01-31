@@ -1,18 +1,19 @@
-import neo3Dapi from 'neo3-dapi';
 import {
 	BaseWalletAdapter,
-	WalletAccountError,
-	WalletDisconnectionError,
-	WalletDisconnectedError,
-	Signer,
 	ContractReadInvocation,
 	ContractReadInvocationMulti,
+	ContractReadInvocationResult,
 	ContractWriteInvocation,
 	ContractWriteInvocationMulti,
-	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
 	GetNetworksInvocationResult,
+	SignMessageInvocation,
+	SignMessageInvocationResult,
+	WalletAccountError,
+	WalletDisconnectedError,
+	WalletDisconnectionError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
+import neo3Dapi from 'neo3-dapi';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -100,7 +101,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -113,7 +114,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await neo3Dapi.invokeReadMulti({
 				invokeReadArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -128,7 +129,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -144,7 +145,7 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await neo3Dapi.invokeMulti({
 				invokeArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -166,13 +167,16 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
-	private _signers(signers: Signer[]): any[] {
-		return signers.map((signer) => ({
-			account: signer.account,
-			scopes: signer.scope,
-			allowedContracts: signer.allowedContracts,
-			allowedGroups: signer.allowedGroups,
-		}));
+	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
+		try {
+			const response = await neo3Dapi.signMessage({
+				message: request.message,
+			});
+			return this._responseToSignMessageResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
 	}
 
 	private _responseToReadResult(response: any): ContractReadInvocationResult {
@@ -215,6 +219,18 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 				networks: response.networks,
 				chainId: response.chainId,
 				defaultNetwork: response.defaultNetwork,
+			},
+		};
+	}
+
+	private _responseToSignMessageResult(response: any): SignMessageInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				publicKey: response.publicKey,
+				data: response.data,
+				salt: response.salt,
+				message: response.message,
 			},
 		};
 	}

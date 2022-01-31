@@ -7,6 +7,7 @@ import {
 	WalletError,
 	WalletNotConnectedError,
 	WalletNotReadyError,
+	SignMessageInvocation,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { Wallet, WalletName } from '@rentfuse-labs/neo-wallet-adapter-wallets';
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -237,6 +238,15 @@ export const WalletProvider = React.memo(function WalletProvider({
 		return await adapter.getNetworks();
 	}, [adapter, onError, connected]);
 
+	const signMessage = useCallback(
+		async (request: SignMessageInvocation) => {
+			if (!adapter) throw onError(new WalletNotSelectedError());
+			if (!connected) throw onError(new WalletNotConnectedError());
+			return await adapter.signMessage(request);
+		},
+		[adapter, onError, connected],
+	);
+
 	// Setup and teardown event listeners when the adapter changes
 	useEffect(() => {
 		if (adapter) {
@@ -273,6 +283,7 @@ export const WalletProvider = React.memo(function WalletProvider({
 				invoke,
 				invokeMulti,
 				getNetworks,
+				signMessage,
 			}}
 		>
 			{children}

@@ -1,33 +1,33 @@
 import {
-	NeoLineAccount,
-	NeoLineInit,
-	NeoLineInterface,
-	NeoLineN3Init,
-	NeoLineN3Interface,
-	NeoLineNetworks,
-	NeoLineReadInvocationResult,
-	NeoLineSigner,
-	NeoLineWriteInvocationResult,
-} from './utils/neoline';
-import {
 	BaseWalletAdapter,
-	pollUntilReady,
-	WalletNotFoundError,
-	WalletError,
-	WalletConnectionError,
-	WalletAccountError,
-	WalletDisconnectionError,
-	WalletNotConnectedError,
-	WalletDisconnectedError,
-	Signer,
 	ContractReadInvocation,
 	ContractReadInvocationMulti,
+	ContractReadInvocationResult,
 	ContractWriteInvocation,
 	ContractWriteInvocationMulti,
-	ContractReadInvocationResult,
 	ContractWriteInvocationResult,
+	pollUntilReady,
+	SignMessageInvocation,
+	SignMessageInvocationResult,
+	WalletAccountError,
+	WalletConnectionError,
+	WalletDisconnectedError,
+	WalletDisconnectionError,
+	WalletError,
+	WalletNotConnectedError,
 	GetNetworksInvocationResult,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
+import {
+	NeoLineAccount,
+	NeoLineNetworks,
+	NeoLineN3Init,
+	NeoLineN3Interface,
+	NeoLineInit,
+	NeoLineInterface,
+	NeoLineReadInvocationResult,
+	NeoLineSignMessageInvocationResult,
+	NeoLineWriteInvocationResult,
+} from './utils/neoline';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -139,7 +139,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -155,7 +155,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await client.invokeReadMulti({
 				invokeReadArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -173,7 +173,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -192,7 +192,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await client.invokeMultiple({
 				invokeArgs: request.invocations,
-				signers: request.signers ? this._signers(request.signers) : [],
+				signers: request.signers as any,
 				fee: request.fee,
 				extraSystemFee: request.extraSystemFee,
 				broadcastOverride: request.broadcastOverride,
@@ -217,13 +217,19 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
-	private _signers(signers: Signer[]): NeoLineSigner[] {
-		return signers.map((signer) => ({
-			account: signer.account,
-			scopes: signer.scope,
-			allowedContracts: signer.allowedContracts,
-			allowedGroups: signer.allowedGroups,
-		}));
+	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
+		const client = this._client;
+		if (!client) throw new WalletNotConnectedError();
+
+		try {
+			const response = await client.signMessage({
+				message: request.message,
+			});
+			return this._responseToSignMessageResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
 	}
 
 	private _responseToReadResult(response: NeoLineReadInvocationResult): ContractReadInvocationResult {
@@ -266,6 +272,18 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				networks: response.networks,
 				chainId: response.chainId,
 				defaultNetwork: response.defaultNetwork,
+			},
+		};
+	}
+
+	private _responseToSignMessageResult(response: NeoLineSignMessageInvocationResult): SignMessageInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				publicKey: response.publicKey,
+				data: response.data,
+				salt: response.salt,
+				message: response.message,
 			},
 		};
 	}
