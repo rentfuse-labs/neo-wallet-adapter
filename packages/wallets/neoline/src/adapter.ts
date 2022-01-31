@@ -270,7 +270,6 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				networks: response.networks,
-				chainId: response.chainId,
 				defaultNetwork: response.defaultNetwork,
 			},
 		};

@@ -113,7 +113,6 @@ export type ContractWriteInvocationResult = {
 
 export type GetNetworksResultData = {
 	networks: string[];
-	chainId: number;
 	defaultNetwork: string;
 };
 
