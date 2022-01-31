@@ -35,6 +35,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _relayProvider: string;
 
 	private _walletConnectInstance: WcSdk | undefined;
+	private _walletConnectChains: string[] = ['neo3:mainnet', 'neo3:testnet', 'neo3:private'];
 
 	constructor(config: WalletConnectWalletAdapterConfig) {
 		super();
@@ -205,8 +206,14 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async getNetworks(): Promise<GetNetworksInvocationResult> {
-		// TODO
-		throw new Error('Not Implemented');
+		try {
+			const walletConnectInstance = this._walletConnectInstance;
+			if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
+			return this._responseToGetNetworksResult(walletConnectInstance.chainId ? walletConnectInstance.chainId : '');
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
 	}
 
 	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
@@ -257,6 +264,16 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			status: 'error',
 			message: response.result.error?.message,
 			code: response.result.error?.code,
+		};
+	}
+
+	private _responseToGetNetworksResult(response: string): GetNetworksInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				networks: this._walletConnectChains,
+				defaultNetwork: response,
+			},
 		};
 	}
 
