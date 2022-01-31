@@ -232,6 +232,12 @@ export const WalletProvider = React.memo(function WalletProvider({
 		[adapter, onError, connected],
 	);
 
+	const getNetworks = useCallback(async () => {
+		if (!adapter) throw onError(new WalletNotSelectedError());
+		if (!connected) throw onError(new WalletNotConnectedError());
+		return await adapter.getNetworks();
+	}, [adapter, onError, connected]);
+
 	const signMessage = useCallback(
 		async (request: SignMessageInvocation) => {
 			if (!adapter) throw onError(new WalletNotSelectedError());
@@ -276,6 +282,7 @@ export const WalletProvider = React.memo(function WalletProvider({
 				invokeReadMulti,
 				invoke,
 				invokeMulti,
+				getNetworks,
 				signMessage,
 			}}
 		>

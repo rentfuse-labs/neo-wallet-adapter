@@ -6,6 +6,7 @@ import {
 	ContractWriteInvocation,
 	ContractWriteInvocationMulti,
 	ContractWriteInvocationResult,
+	GetNetworksInvocationResult,
 	SignMessageInvocation,
 	SignMessageInvocationResult,
 	WalletAccountError,
@@ -156,6 +157,16 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
+	async getNetworks(): Promise<GetNetworksInvocationResult> {
+		try {
+			const response = await neo3Dapi.getNetworks();
+			return this._responseToGetNetworksResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
+	}
+
 	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
 		try {
 			const response = await neo3Dapi.signMessage({
@@ -197,6 +208,16 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				txId: response.txid,
+			},
+		};
+	}
+
+	private _responseToGetNetworksResult(response: any): GetNetworksInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				networks: response.networks,
+				defaultNetwork: response.defaultNetwork,
 			},
 		};
 	}

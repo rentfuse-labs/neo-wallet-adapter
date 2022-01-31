@@ -6,6 +6,7 @@ import {
 	ContractWriteInvocation,
 	ContractWriteInvocationMulti,
 	ContractWriteInvocationResult,
+	GetNetworksInvocationResult,
 	pollUntilReady,
 	SignMessageInvocation,
 	SignMessageInvocationResult,
@@ -18,8 +19,11 @@ import {
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import {
 	NeoLineAccount,
+	NeoLineInit,
+	NeoLineInterface,
 	NeoLineN3Init,
 	NeoLineN3Interface,
+	NeoLineNetworks,
 	NeoLineReadInvocationResult,
 	NeoLineSignMessageInvocationResult,
 	NeoLineWriteInvocationResult,
@@ -43,6 +47,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 	private _options: any;
 
 	private _client: NeoLineN3Interface | undefined;
+	private _clientCommon: NeoLineInterface | undefined;
 
 	constructor(config: NeoLineWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
@@ -78,6 +83,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			try {
 				// Get the neoline client initializing the wallet
 				this._client = await NeoLineN3Init();
+				this._clientCommon = await NeoLineInit();
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
 				throw new WalletConnectionError(error?.message, error);
@@ -198,6 +204,19 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		}
 	}
 
+	async getNetworks(): Promise<GetNetworksInvocationResult> {
+		const client = this._clientCommon;
+		if (!client) throw new WalletNotConnectedError();
+
+		try {
+			const response = await client.getNetworks();
+			return this._responseToGetNetworksResult(response);
+		} catch (error: any) {
+			this.emit('error', error);
+			throw error;
+		}
+	}
+
 	async signMessage(request: SignMessageInvocation): Promise<SignMessageInvocationResult> {
 		const client = this._client;
 		if (!client) throw new WalletNotConnectedError();
@@ -242,6 +261,16 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			status: 'success',
 			data: {
 				txId: response.txid,
+			},
+		};
+	}
+
+	private _responseToGetNetworksResult(response: NeoLineNetworks): GetNetworksInvocationResult {
+		return {
+			status: 'success',
+			data: {
+				networks: response.networks,
+				defaultNetwork: response.defaultNetwork,
 			},
 		};
 	}
