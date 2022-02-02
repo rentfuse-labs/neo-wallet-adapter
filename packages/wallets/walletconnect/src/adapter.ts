@@ -33,11 +33,12 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _options: WcConnectOptions;
 	private _logger: string;
 	private _relayProvider: string;
+	private _neonWallet: boolean;
 
 	private _walletConnectInstance: WcSdk | undefined;
 	private _walletConnectChains: string[] = ['neo3:mainnet', 'neo3:testnet', 'neo3:private'];
 
-	constructor(config: WalletConnectWalletAdapterConfig) {
+	constructor(config: WalletConnectWalletAdapterConfig, neonWallet?: boolean) {
 		super();
 
 		this._address = null;
@@ -45,6 +46,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		this._options = config.options;
 		this._logger = config.logger;
 		this._relayProvider = config.relayProvider;
+		this._neonWallet = neonWallet ? neonWallet : false;
 	}
 
 	get address(): string | null {
@@ -75,15 +77,19 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 				// Initialize it
 				await walletConnectInstance.initClient(this._logger, this._relayProvider);
 
+				let neonWalletConnectWindow: Window | null | undefined;
 				// Subscribe to wc events
 				walletConnectInstance.subscribeToEvents({
 					onProposal: (uri: string) => {
-						// show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
-						QRCodeModal.open(uri, () => {
-							// Eheh just show that!
-						});
-						// alternatively you can show Neon Wallet Connect's website, which is more welcoming
-						//window?.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank')?.focus();
+						if (this._neonWallet) {
+							neonWalletConnectWindow = window?.open(`https://neon.coz.io/connect?uri=${uri}`, '_blank');
+							neonWalletConnectWindow?.focus();
+						} else {
+							// show the QRCode, you can use @walletconnect/qrcode-modal to do so, but any QRCode presentation is fine
+							QRCodeModal.open(uri, () => {
+								// Eheh just show that!
+							});
+						}
 					},
 					onDeleted: () => {
 						// here is where you describe a logout callback
@@ -99,7 +105,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 					// If we're here we need to connect
 					await walletConnectInstance.connect(this._options);
 					// the promise will be resolved after the connection is accepted or refused, you can close the QRCode modal here
-					QRCodeModal.close();
+					if (this._neonWallet && neonWalletConnectWindow) {
+						neonWalletConnectWindow.close();
+					} else {
+						QRCodeModal.close();
+					}
 				}
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
