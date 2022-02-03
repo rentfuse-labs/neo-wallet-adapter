@@ -5,6 +5,7 @@ export enum WalletName {
 	O3 = 'O3',
 	WalletConnect = 'WalletConnect',
 	Neon = 'Neon',
+	OneGate = 'OneGate',
 }
 
 export interface Wallet {
