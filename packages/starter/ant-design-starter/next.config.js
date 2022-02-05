@@ -15,17 +15,39 @@ const lessToJS = require('less-vars-to-js');
 const fs = require('fs');
 const path = require('path');
 
-const pluginAntdLess = withAntdLess({
-	lessLoaderOptions: {
-		lessOptions: {
-			javascriptEnabled: true,
-			modifyVars: lessToJS(fs.readFileSync(path.resolve(__dirname, './styles/antd-custom.less'), 'utf8')),
+module.exports = withPlugins(
+	[
+		[
+			withAntdLess,
+			{
+				lessLoaderOptions: {
+					lessOptions: {
+						javascriptEnabled: true,
+						modifyVars: lessToJS(fs.readFileSync(path.resolve(__dirname, './styles/antd-custom.less'), 'utf8')),
+					},
+				},
+			},
+		],
+		withTM,
+	],
+	{
+		webpack: (config, { isServer }) => {
+			if (!isServer) {
+				config.resolve.fallback = {
+					fs: false,
+					path: false,
+					os: false,
+					zlib: false,
+					stream: false,
+					net: false,
+					tls: false,
+					crypto: false,
+					http: false,
+					https: false,
+					url: false,
+				};
+			}
+			return config;
 		},
 	},
-});
-
-module.exports = withPlugins([[pluginAntdLess], withTM], {
-	webpack(config) {
-		return config;
-	},
-});
+);

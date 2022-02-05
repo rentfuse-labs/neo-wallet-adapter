@@ -191,6 +191,7 @@ The core [wallets](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/mast
 | [neoline](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/neoline)             | Adapter for [NeoLine](https://neoline.io/)             | [`@rentfuse-labs/neo-wallet-adapter-neoline`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-neoline)             |
 | [o3](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/o3)                       | Adapter for [O3](https://o3.network/)                  | [`@rentfuse-labs/neo-wallet-adapter-o3`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-o3)                       |
 | [walletconnect](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/walletconnect) | Adapter for [WalletConnect](https://walletconnect.org) | [`@rentfuse-labs/neo-wallet-adapter-walletconnect`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-walletconnect) |
+| [onegate](https://github.com/rentfuse-labs/neo-wallet-adapter/tree/master/packages/onegate) | Adapter for [OneGate](https://onegate.space) | [`@rentfuse-labs/neo-wallet-adapter-onegate`](https://npmjs.com/package/@rentfuse-labs/neo-wallet-adapter-onegate) |
 
 ## ⚙️ Build from Source
 

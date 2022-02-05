@@ -171,10 +171,10 @@
     "@cityofzion/neon-api" "^5.0.0-next.16"
     "@cityofzion/neon-core" "^5.0.0-next.16"
 
-"@cityofzion/wallet-connect-sdk-core@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@cityofzion/wallet-connect-sdk-core/-/wallet-connect-sdk-core-1.6.0.tgz#b7a6026449e6c3122d9e6a26ca901b525ad2f4ff"
-  integrity sha512-sLIuvyaKsbh6CqYJgu/ooz/5PNYw650svs9DqB0/2qNjPZc8pqEIlo358x5NrwDx4XbG/EeZr5SRSjLkRyTptQ==
+"@cityofzion/wallet-connect-sdk-core@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@cityofzion/wallet-connect-sdk-core/-/wallet-connect-sdk-core-1.6.1.tgz#5315108711e33f5ae84ebc0d774514a1c0ac42ef"
+  integrity sha512-YORKvJnj1IRrblopdSWEoNIuhDsVaa5y76WWT8MnN66+k9cdNoCiIDdYdGd5gCSJWLjLZ2HXdNmfwJdR/7JB+g==
   dependencies:
     "@walletconnect/client" "2.0.0-beta.17"
     "@walletconnect/jsonrpc-utils" "^1.0.0"

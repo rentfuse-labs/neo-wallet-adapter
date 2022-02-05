@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-walletconnect",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -22,7 +22,7 @@
 		"build": "yarn clean && tsc"
 	},
 	"dependencies": {
-		"@cityofzion/wallet-connect-sdk-core": "^1.6.0",
+		"@cityofzion/wallet-connect-sdk-core": "^1.6.1",
 		"@types/pino": "^6.3.11"
 	},
 	"peerDependencies": {

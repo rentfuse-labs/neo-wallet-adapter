@@ -7,10 +7,28 @@ const withTM = require('next-transpile-modules')([
 	'@rentfuse-labs/neo-wallet-adapter-neoline',
 	'@rentfuse-labs/neo-wallet-adapter-o3',
 	'@rentfuse-labs/neo-wallet-adapter-walletconnect',
+	'@rentfuse-labs/neo-wallet-adapter-onegate',
 ]);
 
-/** @type {import('next').NextConfig} */
-module.exports = withTM({
-	reactStrictMode: true,
-	webpack5: true,
+const withPlugins = require('next-compose-plugins');
+
+module.exports = withPlugins([withTM], {
+	webpack: (config, { isServer }) => {
+		if (!isServer) {
+			config.resolve.fallback = {
+				fs: false,
+				path: false,
+				os: false,
+				zlib: false,
+				stream: false,
+				net: false,
+				tls: false,
+				crypto: false,
+				http: false,
+				https: false,
+				url: false,
+			};
+		}
+		return config;
+	},
 });
