@@ -13,7 +13,7 @@ There is also [ant-design](https://github.com/rentfuse-labs/neo-wallet-adapter/t
 Install these dependencies:
 
 ```shell
-yarn add @rentfuse-labs/neo-wallet-adapter-wallets @rentfuse-labs/neo-wallet-adapter-base @rentfuse-labs/neo-wallet-adapter-react @rentfuse-labs/neo-wallet-adapter-react-ui @cityofzion/neon-js^5.0.0-next.16 react
+yarn add @rentfuse-labs/neo-wallet-adapter-wallets @rentfuse-labs/neo-wallet-adapter-base @rentfuse-labs/neo-wallet-adapter-react @rentfuse-labs/neo-wallet-adapter-react-ui @cityofzion/neon-js@next react
 ```
 
 ### Setup
