@@ -89,7 +89,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				throw new WalletConnectionError(error?.message, error);
 			}
 
-			if (!this._client) throw new WalletAccountError();
+			if (!this._client || !this._clientCommon) throw new WalletAccountError();
 
 			let account: NeoLineAccount;
 			try {
@@ -123,6 +123,7 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 
 				this._address = null;
 				this._client = undefined;
+				this._clientCommon = undefined;
 			} catch (error: any) {
 				this.emit('error', new WalletDisconnectionError(error?.message, error));
 			}
@@ -205,11 +206,11 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 	}
 
 	async getNetworks(): Promise<GetNetworksInvocationResult> {
-		const client = this._clientCommon;
-		if (!client) throw new WalletNotConnectedError();
+		const clientCommon = this._clientCommon;
+		if (!clientCommon) throw new WalletNotConnectedError();
 
 		try {
-			const response = await client.getNetworks();
+			const response = await clientCommon.getNetworks();
 			return this._responseToGetNetworksResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
