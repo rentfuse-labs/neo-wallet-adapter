@@ -1,9 +1,35 @@
 import { WalletDisconnectButton, WalletMultiButton } from '@rentfuse-labs/neo-wallet-adapter-ant-design';
+import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { useState, useCallback, useEffect } from 'react';
 
 const Index: NextPage = () => {
+	const { connected, getNetworks } = useWallet();
+
+	const [walletNetwork, setWalletNetwork] = useState<string | null>(null);
+
+	const fetchWalletNetwork = useCallback(async () => {
+		try {
+			const result = await getNetworks();
+			if (result.status === 'success') {
+				setWalletNetwork(result.data?.defaultNetwork || null);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}, [getNetworks]);
+	useEffect(() => {
+		if (connected) {
+			fetchWalletNetwork();
+		} else {
+			setWalletNetwork(null);
+		}
+	}, [connected, fetchWalletNetwork]);
+
+	console.log(walletNetwork);
+
 	return (
 		<>
 			<div className={'container'}>
