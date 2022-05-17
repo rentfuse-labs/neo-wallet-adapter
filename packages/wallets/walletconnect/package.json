@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-walletconnect",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
