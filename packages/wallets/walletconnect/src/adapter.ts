@@ -207,7 +207,15 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
-			const response = await walletConnectInstance.invokeFunction(request.invocations as any, request.signers as any);
+			const response = await walletConnectInstance.invokeFunction(
+				request.invocations.map((invocation) => ({
+					scriptHash: invocation.scriptHash,
+					operation: invocation.operation,
+					args: invocation.args as any,
+					abortOnFail: invocation.abortOnFail,
+				})),
+				request.signers as any,
+			);
 			return this._responseToWriteResult(response);
 		} catch (error: any) {
 			this.emit('error', error);
