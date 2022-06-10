@@ -267,21 +267,11 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	}
 
 	private _responseToWriteResult(response: RpcCallResult<any>): ContractWriteInvocationResult {
-		// If the state is halt it means that everything went well
-		if (response.result.state === 'HALT') {
-			return {
-				status: 'success',
-				data: {
-					...response.result,
-				},
-			};
-		}
-
-		// Otherwise an error occurred and so return it
 		return {
-			status: 'error',
-			message: response.result.error?.message,
-			code: response.result.error?.code,
+			status: 'success',
+			data: {
+				...response.result,
+			},
 		};
 	}
 
