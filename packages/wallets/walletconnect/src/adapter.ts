@@ -270,7 +270,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		return {
 			status: 'success',
 			data: {
-				...response.result,
+				txId: response.result,
 			},
 		};
 	}
