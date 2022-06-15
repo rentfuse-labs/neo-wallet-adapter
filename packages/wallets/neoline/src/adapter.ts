@@ -294,7 +294,8 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _disconnected() {
+	// Arrow function to bind this correctly in event listener
+	private _disconnected = () => {
 		this.disconnect();
-	}
+	};
 }
