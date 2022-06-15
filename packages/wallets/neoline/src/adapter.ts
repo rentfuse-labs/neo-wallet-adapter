@@ -123,6 +123,10 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 				// TODO: How?
 				//await this._client.disconnect();
 
+				window.removeEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
+				window.removeEventListener('NEOLine.NEO.EVENT.ACCOUNT_CHANGED', this._disconnected);
+				window.removeEventListener('NEOLine.NEO.EVENT.NETWORK_CHANGED', this._disconnected);
+
 				this._address = null;
 				this._client = undefined;
 				this._clientCommon = undefined;
@@ -291,19 +295,6 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 	}
 
 	private _disconnected() {
-		const client = this._client;
-		if (client) {
-			window.removeEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
-			window.removeEventListener('NEOLine.NEO.EVENT.ACCOUNT_CHANGED', this._disconnected);
-			window.removeEventListener('NEOLine.NEO.EVENT.NETWORK_CHANGED', this._disconnected);
-
-			// Clear everything
-			this._address = null;
-			this._client = undefined;
-			this._clientCommon = undefined;
-
-			this.emit('error', new WalletDisconnectedError());
-			this.emit('disconnect');
-		}
+		this.disconnect();
 	}
 }
