@@ -12,7 +12,6 @@ import {
 	SignMessageInvocationResult,
 	WalletAccountError,
 	WalletConnectionError,
-	WalletDisconnectedError,
 	WalletDisconnectionError,
 	WalletError,
 	WalletNotConnectedError,
