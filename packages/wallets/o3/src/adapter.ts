@@ -73,6 +73,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 
 			// Add a listener to cleanup of disconnection
 			neo3Dapi.addEventListener(neo3Dapi.Constants.EventName.DISCONNECTED, this._disconnected);
+			neo3Dapi.addEventListener(neo3Dapi.Constants.EventName.ACCOUNT_CHANGED, this._disconnected);
+			neo3Dapi.addEventListener(neo3Dapi.Constants.EventName.NETWORK_CHANGED, this._disconnected);
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -85,6 +87,10 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 
 	async disconnect(): Promise<void> {
 		try {
+			neo3Dapi.removeEventListener(neo3Dapi.Constants.EventName.DISCONNECTED);
+			neo3Dapi.removeEventListener(neo3Dapi.Constants.EventName.ACCOUNT_CHANGED);
+			neo3Dapi.removeEventListener(neo3Dapi.Constants.EventName.NETWORK_CHANGED);
+
 			// TODO: How?
 			//await neo3Dapi.disconnect();
 
@@ -234,12 +240,8 @@ export class O3WalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _disconnected() {
-		neo3Dapi.removeEventListener(neo3Dapi.Constants.EventName.DISCONNECTED);
-
-		this._address = null;
-
-		this.emit('error', new WalletDisconnectedError());
-		this.emit('disconnect');
-	}
+	// Arrow function to bind this correctly in event listener
+	private _disconnected = () => {
+		this.disconnect();
+	};
 }

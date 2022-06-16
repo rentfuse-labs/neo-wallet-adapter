@@ -83,7 +83,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 				throw new WalletConnectionError(error?.message, error);
 			}
 
-			if (!this._oneGateDapi) throw new WalletAccountError();
+			if (!this._oneGateDapi || !this._oneGateProvider) throw new WalletAccountError();
 
 			// Taken from https://github.com/neo-ngd/neo-dapi-monorepo/tree/master/packages/neo-dapi
 			let account: { address: string; publicKey: string };
@@ -98,7 +98,9 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 			this._address = account.address;
 
 			// Add a listener to cleanup of disconnection
-			this._oneGateProvider?.on('disconnect', this._disconnected);
+			this._oneGateProvider.on('disconnect', this._disconnected);
+			this._oneGateProvider.on('accountChanged', this._disconnected);
+			this._oneGateProvider.on('networkChanged', this._disconnected);
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -111,13 +113,20 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 
 	async disconnect(): Promise<void> {
 		const client = this._oneGateDapi;
-		if (client) {
+		const provider = this._oneGateProvider;
+
+		if (client && provider) {
 			try {
 				// TODO: How?
 				//await this._oneGateDapi.disconnect();
 
+				provider.removeListener('disconnect', this._disconnected);
+				provider.removeListener('accountChanged', this._disconnected);
+				provider.removeListener('networkChanged', this._disconnected);
+
 				this._address = null;
 				this._oneGateDapi = undefined;
+				this._oneGateProvider = undefined;
 			} catch (error: any) {
 				this.emit('error', new WalletDisconnectionError(error?.message, error));
 			}
@@ -269,17 +278,8 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _disconnected() {
-		const provider = this._oneGateProvider;
-		if (provider) {
-			provider.removeListener('disconnect', this._disconnected);
-
-			this._address = null;
-			this._oneGateDapi = undefined;
-			this._oneGateProvider = undefined;
-
-			this.emit('error', new WalletDisconnectedError());
-			this.emit('disconnect');
-		}
-	}
+	// Arrow function to bind this correctly in event listener
+	private _disconnected = () => {
+		this.disconnect();
+	};
 }

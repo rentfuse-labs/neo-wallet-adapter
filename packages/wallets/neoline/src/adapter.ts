@@ -12,7 +12,6 @@ import {
 	SignMessageInvocationResult,
 	WalletAccountError,
 	WalletConnectionError,
-	WalletDisconnectedError,
 	WalletDisconnectionError,
 	WalletError,
 	WalletNotConnectedError,
@@ -102,8 +101,10 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			if (!account) throw new WalletAccountError();
 			this._address = account.address;
 
-			// Add a listener to cleanup of disconnection
+			// Add a listener to cleanup on changes condition
 			window.addEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
+			window.addEventListener('NEOLine.NEO.EVENT.ACCOUNT_CHANGED', this._disconnected);
+			window.addEventListener('NEOLine.NEO.EVENT.NETWORK_CHANGED', this._disconnected);
 
 			this.emit('connect');
 		} catch (error: any) {
@@ -120,6 +121,10 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 			try {
 				// TODO: How?
 				//await this._client.disconnect();
+
+				window.removeEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
+				window.removeEventListener('NEOLine.NEO.EVENT.ACCOUNT_CHANGED', this._disconnected);
+				window.removeEventListener('NEOLine.NEO.EVENT.NETWORK_CHANGED', this._disconnected);
 
 				this._address = null;
 				this._client = undefined;
@@ -288,16 +293,8 @@ export class NeoLineWalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _disconnected() {
-		const client = this._client;
-		if (client) {
-			window.removeEventListener('NEOLine.NEO.EVENT.DISCONNECTED', this._disconnected);
-
-			this._address = null;
-			this._client = undefined;
-
-			this.emit('error', new WalletDisconnectedError());
-			this.emit('disconnect');
-		}
-	}
+	// Arrow function to bind this correctly in event listener
+	private _disconnected = () => {
+		this.disconnect();
+	};
 }

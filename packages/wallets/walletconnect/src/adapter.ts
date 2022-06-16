@@ -297,14 +297,8 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		};
 	}
 
-	private _disconnected() {
-		const walletConnectInstance = this._walletConnectInstance;
-		if (walletConnectInstance) {
-			this._address = null;
-			this._walletConnectInstance = undefined;
-
-			this.emit('error', new WalletDisconnectedError());
-			this.emit('disconnect');
-		}
-	}
+	// Arrow function to bind this correctly and be similar to other wallets
+	private _disconnected = () => {
+		this.disconnect();
+	};
 }
