@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-ant-design",
-	"version": "0.3.1",
+	"version": "0.3.2-beta1",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -23,8 +23,8 @@
 	"peerDependencies": {
 		"@ant-design/icons": "^4.6.3",
 		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1",
-		"@rentfuse-labs/neo-wallet-adapter-react": "^0.3.1",
-		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.3.1",
+		"@rentfuse-labs/neo-wallet-adapter-react": "^0.3.2-beta1",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.3.3-beta1",
 		"antd": "^4.16.11",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
@@ -32,8 +32,8 @@
 	"devDependencies": {
 		"@ant-design/icons": "^4.6.3",
 		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1",
-		"@rentfuse-labs/neo-wallet-adapter-react": "^0.3.1",
-		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.3.1",
+		"@rentfuse-labs/neo-wallet-adapter-react": "^0.3.2-beta1",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.3.3-beta1",
 		"antd": "^4.16.11",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
