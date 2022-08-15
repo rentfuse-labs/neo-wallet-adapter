@@ -4,7 +4,6 @@
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
-	"type": "module",
 	"sideEffects": false,
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
