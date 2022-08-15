@@ -56,11 +56,5 @@
 		"typedoc": "^0.22.2",
 		"typescript": "^4.4.3"
 	},
-	"resolutions": {
-		"@walletconnect/client": "2.0.0-beta.17",
-		"@walletconnect/jsonrpc-utils": "^1.0.0",
-		"@walletconnect/qrcode-modal": "^2.0.0-alpha.20",
-		"@walletconnect/types": "2.0.0-beta.17",
-		"@walletconnect/utils": "2.0.0-beta.17"
-	}
+	"resolutions": {}
 }

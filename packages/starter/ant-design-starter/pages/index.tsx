@@ -1,4 +1,6 @@
+import { wallet } from '@cityofzion/neon-js';
 import { WalletDisconnectButton, WalletMultiButton } from '@rentfuse-labs/neo-wallet-adapter-ant-design';
+import { WitnessScope } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { useWallet } from '@rentfuse-labs/neo-wallet-adapter-react';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -6,7 +8,7 @@ import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
 
 const Index: NextPage = () => {
-	const { connected, getNetworks } = useWallet();
+	const { address, connected, getNetworks, invoke } = useWallet();
 
 	const [walletNetwork, setWalletNetwork] = useState<string | null>(null);
 
@@ -30,6 +32,25 @@ const Index: NextPage = () => {
 
 	console.log(walletNetwork);
 
+	const transferGas = useCallback(async () => {
+		if (!address) return;
+
+		const resp = await invoke({
+			scriptHash: '0xd2a4cff31913016155e38e474a2c06d08be276cf',
+			operation: 'transfer',
+			args: [
+				{ type: 'Hash160', value: wallet.getScriptHashFromAddress(address) },
+				{ type: 'Hash160', value: wallet.getScriptHashFromAddress('NaeVfwjsZBpdYSaLzButjCXby8dvL16Qps') },
+				{ type: 'Integer', value: 100000000 },
+				{ type: 'Array', value: [] },
+			],
+			signers: [{ account: wallet.getScriptHashFromAddress(address), scopes: WitnessScope.CalledByEntry }],
+		});
+
+		console.log(resp);
+		window.alert(JSON.stringify(resp, null, 2));
+	}, [address, invoke]);
+
 	return (
 		<>
 			<div className={'container'}>
@@ -48,6 +69,10 @@ const Index: NextPage = () => {
 						<WalletMultiButton />
 						<WalletDisconnectButton />
 					</div>
+
+					<p className={'description'}>
+						<button onClick={transferGas}>{'Invoke transfer GAS'}</button>
+					</p>
 
 					<p className={'description'}>
 						Get started by editing <code className={'code'}>pages/index.js</code>

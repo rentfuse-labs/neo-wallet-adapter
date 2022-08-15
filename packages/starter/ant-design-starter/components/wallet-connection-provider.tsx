@@ -1,5 +1,5 @@
 import React from 'react';
-import { getNeoLineWallet, getO3Wallet, getWalletConnectWallet } from '@rentfuse-labs/neo-wallet-adapter-wallets';
+import { getNeoLineWallet, getO3Wallet, getNeonWalletConnectWallet } from '@rentfuse-labs/neo-wallet-adapter-wallets';
 import { ReactNode, useMemo } from 'react';
 import { WalletProvider } from '@rentfuse-labs/neo-wallet-adapter-react';
 
@@ -14,19 +14,18 @@ export const WalletConnectionProvider = React.memo(function WalletConnectionProv
 		() => [
 			getNeoLineWallet(),
 			getO3Wallet(),
-			getWalletConnectWallet({
+			getNeonWalletConnectWallet({
 				options: {
-					chains: ['neo3:testnet'], // ['neo3:mainnet', 'neo3:testnet', 'neo3:private']
-					methods: ['invokeFunction'], // ['invokeFunction',any other method name present on the RpcServer eg. getversion]
-					appMetadata: {
+					projectId: 'a9ff54e3d56a52230ed8767db4d4a810',
+					relayUrl: 'wss://relay.walletconnect.com',
+					metadata: {
 						name: 'Example',
 						description: 'Example description',
 						url: 'https://neonova.space',
 						icons: ['https://raw.githubusercontent.com/rentfuse-labs/neonova/main/neonova-icon.png'],
 					},
 				},
-				logger: 'debug',
-				relayProvider: 'wss://relay.walletconnect.org',
+				network: 'neo3:testnet',
 			}),
 		],
 		[],
