@@ -7,6 +7,7 @@
 	"license": "Apache-2.0",
 	"main": "dist/index.js",
 	"files": [
+		"dist",
 		"lib",
 		"src",
 		"LICENSE"
