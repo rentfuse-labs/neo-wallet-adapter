@@ -15,8 +15,7 @@
 	"scripts": {
 		"clean": "shx rm -rf lib/*",
 		"build": "yarn clean && tsc",
-		"dist": "cross-env NODE_ENV=development webpack --mode development",
-		"dist:prod": "cross-env NODE_ENV=production webpack --mode production"
+		"dist": "cross-env NODE_ENV=production webpack --mode production"
 	},
 	"dependencies": {
 		"@cityofzion/neon-js": "^5.0.0",
