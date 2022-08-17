@@ -29,7 +29,7 @@ or
 <!DOCTYPE html>
 <html>
   ...
-  <script src="https://example.org/neo-wallet-adapter.web.js"></script>
+  <script src="https://www.unpkg.com/@rentfuse-labs/neo-wallet-adapter-bundle@0.3.0/lib/neo-wallet-adapter.web.js"></script>
   <script>
     // ...
     // Global variable
