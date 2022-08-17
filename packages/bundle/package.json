@@ -5,7 +5,7 @@
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
 	"sideEffects": false,
-	"main": "lib/index.js",
+	"main": "lib/neo-wallet-adapter.web.js",
 	"files": [
 		"lib",
 		"src",
