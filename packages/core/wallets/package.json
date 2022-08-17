@@ -27,9 +27,9 @@
 		"@rentfuse-labs/neo-wallet-adapter-onegate": "^0.3.2"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.2"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.2"
 	}
 }
