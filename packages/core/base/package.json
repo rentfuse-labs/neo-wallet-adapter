@@ -1,10 +1,9 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-base",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
-	"type": "module",
 	"sideEffects": false,
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
@@ -22,11 +21,5 @@
 	},
 	"dependencies": {
 		"eventemitter3": "^4.0.7"
-	},
-	"peerDependencies": {
-		"@cityofzion/neon-js": "^5.0.0"
-	},
-	"devDependencies": {
-		"@cityofzion/neon-js": "^5.0.0"
 	}
 }

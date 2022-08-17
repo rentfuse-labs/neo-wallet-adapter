@@ -4,7 +4,6 @@
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
-	"type": "module",
 	"sideEffects": false,
 	"main": "lib/index.js",
 	"esnext": "lib/index.js",
@@ -28,9 +27,9 @@
 		"@rentfuse-labs/neo-wallet-adapter-onegate": "^0.3.2"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.2"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.2"
 	}
 }

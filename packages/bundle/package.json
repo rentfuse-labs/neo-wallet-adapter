@@ -1,0 +1,26 @@
+{
+	"name": "@rentfuse-labs/neo-wallet-adapter-bundle",
+	"version": "0.3.0",
+	"author": "Rentfuse Labs",
+	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
+	"license": "Apache-2.0",
+	"sideEffects": false,
+	"main": "lib/neo-wallet-adapter.web.js",
+	"files": [
+		"lib",
+		"src",
+		"LICENSE"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"clean": "shx rm -rf lib/*",
+		"cdn": "cross-env NODE_ENV=production webpack --mode production",
+		"build": "yarn clean && yarn cdn"
+	},
+	"dependencies": {
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.2",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.3.1"
+	}
+}
