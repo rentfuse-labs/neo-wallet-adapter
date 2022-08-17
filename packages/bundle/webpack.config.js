@@ -7,8 +7,8 @@ module.exports = function () {
 	const nodeOutput = Object.assign({}, base, {
 		target: 'node',
 		output: {
-			path: path.resolve(__dirname, 'dist'),
-			filename: 'index.js',
+			path: path.resolve(__dirname, 'lib'),
+			filename: 'neo-wallet-adapter.node.js',
 			libraryTarget: 'commonjs2',
 		},
 	});
@@ -19,8 +19,8 @@ module.exports = function () {
 	const webOutput = Object.assign({}, base, {
 		target: 'web',
 		output: {
-			path: path.resolve(__dirname, 'dist'),
-			filename: 'browser.js',
+			path: path.resolve(__dirname, 'lib'),
+			filename: 'neo-wallet-adapter.web.js',
 			libraryTarget: 'umd',
 			library: 'NeoWalletAdapter', // This is the var name in browser
 		},
