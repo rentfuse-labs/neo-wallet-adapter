@@ -23,6 +23,24 @@ or
 npm install @rentfuse-labs/neo-wallet-adapter-wallets @rentfuse-labs/neo-wallet-adapter-base @rentfuse-labs/neo-wallet-adapter-react @rentfuse-labs/neo-wallet-adapter-react-ui @cityofzion/neon-js@next react
 ```
 
+or 
+
+```html
+<!DOCTYPE html>
+<html>
+  ...
+  <script src="https://www.unpkg.com/@rentfuse-labs/neo-wallet-adapter-bundle@0.3.0/lib/neo-wallet-adapter.web.js"></script>
+  <script>
+    // ...
+    // Global variable
+    NeoWalletAdapter.fun1('Five');
+    // Property in the window object
+    window.NeoWalletAdapter.fun1('Five');
+    // ...
+  </script>
+</html>
+```
+
 ### Setup
 
 ```tsx
@@ -224,3 +242,9 @@ yarn start
 ### Development notes
 
 Dev dependencies are equal to peer dependencies to be used while developing.
+
+#### Bundles folder
+
+Bundle folder inside packages one is used to create a bundled version of the library.
+
+It must have a package.json with **private:true** property to avoid having it published by lerna.

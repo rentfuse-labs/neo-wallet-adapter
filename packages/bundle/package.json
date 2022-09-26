@@ -1,12 +1,11 @@
 {
-	"name": "@rentfuse-labs/neo-wallet-adapter-base",
+	"name": "@rentfuse-labs/neo-wallet-adapter-bundle",
 	"version": "0.4.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
 	"sideEffects": false,
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
+	"main": "lib/neo-wallet-adapter.web.js",
 	"files": [
 		"lib",
 		"src",
@@ -17,15 +16,11 @@
 	},
 	"scripts": {
 		"clean": "shx rm -rf lib/*",
-		"build": "yarn clean && tsc"
+		"cdn": "cross-env NODE_ENV=production webpack --mode production",
+		"build": "yarn clean && yarn cdn"
 	},
 	"dependencies": {
-		"eventemitter3": "^4.0.7"
-	},
-	"peerDependencies": {
-		"@cityofzion/neon-js": "^5.0.0"
-	},
-	"devDependencies": {
-		"@cityofzion/neon-js": "^5.0.0"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0",
+		"@rentfuse-labs/neo-wallet-adapter-wallets": "^0.4.0"
 	}
 }
