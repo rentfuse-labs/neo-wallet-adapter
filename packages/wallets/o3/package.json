@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-o3",
-	"version": "0.3.2",
+	"version": "0.4.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -24,9 +24,9 @@
 		"neo3-dapi": "^1.0.1"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.3.1"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0"
 	}
 }

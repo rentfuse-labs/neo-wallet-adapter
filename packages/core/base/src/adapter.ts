@@ -125,6 +125,7 @@ export type GetNetworksInvocationResult = {
 
 export type SignMessageInvocation = {
 	message: string;
+	version?: number;
 };
 
 export type SignMessageResultData = {
