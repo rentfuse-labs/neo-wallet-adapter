@@ -159,6 +159,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
+			// Remember gas fee conversion with 8 decimals as it's passed as float in input request param
 			const response = await walletConnectInstance.invokeFunction({
 				signers: request.signers as any,
 				invocations: [
@@ -169,6 +170,8 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 						abortOnFail: request.abortOnFail,
 					},
 				],
+				extraNetworkFee: request.fee ? +request.fee * 100000000 : undefined,
+				extraSystemFee: request.extraSystemFee ? +request.extraSystemFee * 100000000 : undefined,
 			});
 			return this._responseToWriteResult(response);
 		} catch (error: any) {
@@ -182,6 +185,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		if (!walletConnectInstance || !walletConnectInstance.session) throw new WalletNotConnectedError();
 
 		try {
+			// Remember gas fee conversion with 8 decimals as it's passed as float in input request param
 			const response = await walletConnectInstance.invokeFunction({
 				signers: request.signers as any,
 				invocations: request.invocations.map((invocation) => ({
@@ -190,6 +194,8 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 					args: invocation.args as any,
 					abortOnFail: invocation.abortOnFail,
 				})),
+				extraNetworkFee: request.fee ? +request.fee * 100000000 : undefined,
+				extraSystemFee: request.extraSystemFee ? +request.extraSystemFee * 100000000 : undefined,
 			});
 			return this._responseToWriteResult(response);
 		} catch (error: any) {

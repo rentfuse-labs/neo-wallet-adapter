@@ -19,7 +19,7 @@ import {
 	WalletNotConnectedError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { INeoDapi, NeoDapi } from '@neongd/neo-dapi';
-import { INeoProvider } from '@neongd/neo-provider';
+import { NeoProvider } from '@neongd/neo-provider';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -39,7 +39,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 	private _options: any;
 
 	private _oneGateDapi: INeoDapi | undefined;
-	private _oneGateProvider: INeoProvider | undefined;
+	private _oneGateProvider: NeoProvider | undefined;
 
 	constructor(config: OneGateWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
@@ -173,13 +173,14 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 		if (!client) throw new WalletNotConnectedError();
 
 		try {
+			// Remember gas fee conversion with 8 decimals as it's passed as float in input request param
 			const response = await client.invoke({
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
 				signers: request.signers as any,
-				extraNetworkFee: request.fee,
-				extraSystemFee: request.extraSystemFee,
+				extraNetworkFee: request.fee ? (+request.fee * 100000000).toString() : undefined,
+				extraSystemFee: request.extraSystemFee ? (+request.extraSystemFee * 100000000).toString() : undefined,
 				broadcastOverride: request.broadcastOverride,
 			});
 			return this._responseToWriteResult(response);
@@ -194,11 +195,12 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 		if (!client) throw new WalletNotConnectedError();
 
 		try {
+			// Remember gas fee conversion with 8 decimals as it's passed as float in input request param
 			const response = await client.invokeMulti({
 				invocations: request.invocations,
 				signers: request.signers as any,
-				extraNetworkFee: request.fee,
-				extraSystemFee: request.extraSystemFee,
+				extraNetworkFee: request.fee ? (+request.fee * 100000000).toString() : undefined,
+				extraSystemFee: request.extraSystemFee ? (+request.extraSystemFee * 100000000).toString() : undefined,
 				broadcastOverride: request.broadcastOverride,
 			});
 			return this._responseToWriteResult(response);
