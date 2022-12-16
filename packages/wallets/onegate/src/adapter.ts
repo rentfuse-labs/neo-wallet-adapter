@@ -19,7 +19,7 @@ import {
 	WalletNotConnectedError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
 import { INeoDapi, NeoDapi } from '@neongd/neo-dapi';
-import { NeoProvider } from '@neongd/neo-provider';
+import { INeoProvider } from '@neongd/neo-provider';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -39,7 +39,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 	private _options: any;
 
 	private _oneGateDapi: INeoDapi | undefined;
-	private _oneGateProvider: NeoProvider | undefined;
+	private _oneGateProvider: INeoProvider | undefined;
 
 	constructor(config: OneGateWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
