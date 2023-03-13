@@ -1,3 +1,4 @@
+import { BaseDapi } from '@neongd/neo-dapi';
 import {
 	BaseWalletAdapter,
 	ContractReadInvocation,
@@ -8,17 +9,17 @@ import {
 	ContractWriteInvocationResult,
 	GetNetworksInvocationResult,
 	pollUntilReady,
+	Signer,
 	SignMessageInvocation,
 	SignMessageInvocationResult,
 	WalletAccountError,
 	WalletConnectionError,
-	WalletDisconnectedError,
 	WalletDisconnectionError,
 	WalletError,
 	WalletMethodNotSupportedError,
 	WalletNotConnectedError,
+	WitnessScope,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
-import { BaseDapi } from '@neongd/neo-dapi';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -144,7 +145,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers as any,
+				signers: request.signers?.map((_signer) => this._normalizeSigner(_signer)) as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -160,7 +161,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await client.invokeReadMulti({
 				invocations: request.invocations,
-				signers: request.signers as any,
+				signers: request.signers?.map((_signer) => this._normalizeSigner(_signer)) as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -179,7 +180,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 				scriptHash: request.scriptHash,
 				operation: request.operation,
 				args: request.args,
-				signers: request.signers as any,
+				signers: request.signers?.map((_signer) => this._normalizeSigner(_signer)) as any,
 				extraNetworkFee: request.fee ? (+request.fee * 100000000).toString() : undefined,
 				extraSystemFee: request.extraSystemFee ? (+request.extraSystemFee * 100000000).toString() : undefined,
 				broadcastOverride: request.broadcastOverride,
@@ -199,7 +200,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 			// Remember gas fee conversion with 8 decimals as it's passed as float in input request param
 			const response = await client.invokeMulti({
 				invocations: request.invocations,
-				signers: request.signers as any,
+				signers: request.signers?.map((_signer) => this._normalizeSigner(_signer)) as any,
 				extraNetworkFee: request.fee ? (+request.fee * 100000000).toString() : undefined,
 				extraSystemFee: request.extraSystemFee ? (+request.extraSystemFee * 100000000).toString() : undefined,
 				broadcastOverride: request.broadcastOverride,
@@ -279,6 +280,16 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 				defaultNetwork: response.defaultNetwork,
 			},
 		};
+	}
+
+	private _normalizeSigner(signer: Signer): Signer {
+		let scopes: any = '';
+		if (signer.scopes & WitnessScope.None) scopes += 'None';
+		if (signer.scopes & WitnessScope.CalledByEntry) scopes += (scopes.length ? ',' : '') + 'CalledByEntry';
+		if (signer.scopes & WitnessScope.CustomContracts) scopes += (scopes.length ? ',' : '') + 'CustomContracts';
+		if (signer.scopes & WitnessScope.CustomGroups) scopes += (scopes.length ? ',' : '') + 'CustomGroups';
+		if (signer.scopes & WitnessScope.Global) scopes += (scopes.length ? ',' : '') + 'Global';
+		return { ...signer, scopes };
 	}
 
 	// Arrow function to bind this correctly in event listener
