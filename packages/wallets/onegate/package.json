@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-onegate",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -21,8 +21,8 @@
 		"build": "yarn clean && tsc"
 	},
 	"dependencies": {
-		"@neongd/neo-dapi": "1.0.1",
-		"@neongd/neo-provider": "^1.0.1"
+		"@neongd/neo-dapi": "1.2.0",
+		"@neongd/neo-provider": "1.2.0"
 	},
 	"peerDependencies": {
 		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0"

@@ -18,8 +18,7 @@ import {
 	WalletMethodNotSupportedError,
 	WalletNotConnectedError,
 } from '@rentfuse-labs/neo-wallet-adapter-base';
-import { INeoDapi, NeoDapi } from '@neongd/neo-dapi';
-import { INeoProvider } from '@neongd/neo-provider';
+import { BaseDapi } from '@neongd/neo-dapi';
 
 const DEFAULT_WALLET_CONFIG = { options: null };
 
@@ -38,8 +37,8 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 	// TODO: What?
 	private _options: any;
 
-	private _oneGateDapi: INeoDapi | undefined;
-	private _oneGateProvider: INeoProvider | undefined;
+	private _oneGateDapi: BaseDapi | undefined;
+	private _oneGateProvider: any | undefined;
 
 	constructor(config: OneGateWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
@@ -73,10 +72,12 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 			this._connecting = true;
 
 			try {
-				this._oneGateProvider = (window as any).OneGate;
+				// Search for an available provider
+				this._oneGateProvider = (window as any).neo || (window as any).OneGate || (window as any).Vital;
+				// If set init the dapi
 				if (this._oneGateProvider) {
 					// Get the neoline client initializing the wallet
-					this._oneGateDapi = new NeoDapi(this._oneGateProvider);
+					this._oneGateDapi = new BaseDapi(this._oneGateProvider);
 				}
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
