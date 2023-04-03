@@ -24,14 +24,14 @@ import {
 const DEFAULT_WALLET_CONFIG = { options: null };
 
 // The configuration object used to create an instance of the wallet
-export interface OneGateWalletAdapterConfig {
+export interface NeoLineMobileWalletAdapterConfig {
 	options: any;
 	pollInterval?: number;
 	pollCount?: number;
 }
 
-// Reference at https://this._oneGateDapidocs.o3.network/#getting-started (Taken on 10/11/21)
-export class OneGateWalletAdapter extends BaseWalletAdapter {
+// Same as OneGate
+export class NeoLineMobileWalletAdapter extends BaseWalletAdapter {
 	private _address: string | null;
 	private _connecting: boolean;
 
@@ -41,7 +41,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 	private _oneGateDapi: BaseDapi | undefined;
 	private _oneGateProvider: any | undefined;
 
-	constructor(config: OneGateWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
+	constructor(config: NeoLineMobileWalletAdapterConfig = DEFAULT_WALLET_CONFIG) {
 		super();
 
 		this._address = null;
@@ -56,10 +56,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 	}
 
 	get ready(): boolean {
-		return (
-			typeof window !== 'undefined' &&
-			((window as any).neo || (window as any).OneGate || (window as any).Vital) !== 'undefined'
-		);
+		return typeof window !== 'undefined' && (window as any).NeoLineMobile !== 'undefined';
 	}
 
 	get connecting(): boolean {
@@ -77,7 +74,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 
 			try {
 				// Search for an available provider
-				this._oneGateProvider = (window as any).neo || (window as any).OneGate || (window as any).Vital;
+				this._oneGateProvider = (window as any).NeoLineMobile;
 				// If set init the dapi
 				if (this._oneGateProvider) {
 					// Get the neoline client initializing the wallet
@@ -93,7 +90,7 @@ export class OneGateWalletAdapter extends BaseWalletAdapter {
 			// Taken from https://github.com/neo-ngd/neo-dapi-monorepo/tree/master/packages/neo-dapi
 			let account: { address: string; publicKey: string };
 			try {
-				// OneGate asks the user to connect the dapp when calling the getAccount method
+				// NeoLineMobile asks the user to connect the dapp when calling the getAccount method
 				account = await this._oneGateDapi.getAccount();
 			} catch (error: any) {
 				throw new WalletAccountError(error?.message, error);
