@@ -1,4 +1,4 @@
-import WcSdk, { InvokeResult, NetworkType, SignedMessage } from '@cityofzion/wallet-connect-sdk-core';
+import WcSdk, { InvokeResult, Method, NetworkType, SignedMessage } from '@cityofzion/wallet-connect-sdk-core';
 import {
 	BaseWalletAdapter,
 	ContractReadInvocation,
@@ -23,6 +23,7 @@ import { SignClientTypes } from '@walletconnect/types';
 export interface WalletConnectWalletAdapterConfig {
 	options: SignClientTypes.Options;
 	network: NetworkType;
+	methods?: Method[];
 }
 
 export class WalletConnectWalletAdapter extends BaseWalletAdapter {
@@ -32,6 +33,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 	private _options: SignClientTypes.Options;
 	private _network: NetworkType;
 	private _neonWallet: boolean;
+	private _methods: Method[] = ['invokeFunction', 'testInvoke', 'signMessage', 'verifyMessage'];
 
 	private _walletConnectInstance: WcSdk | undefined;
 	private _walletConnectChains: NetworkType[] = ['neo3:mainnet', 'neo3:testnet', 'neo3:private'];
@@ -43,6 +45,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		this._connecting = false;
 		this._options = config.options;
 		this._network = config.network;
+		if (config.methods) this._methods = config.methods;
 		this._neonWallet = neonWallet ? neonWallet : false;
 	}
 
@@ -77,7 +80,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 				// If the session has not been loaded try to load it
 				if (!walletConnectInstance.isConnected()) {
 					// If we're here we need to connect
-					await walletConnectInstance.connect(this._network);
+					await walletConnectInstance.connect(this._network, this._methods);
 				}
 			} catch (error: any) {
 				if (error instanceof WalletError) throw error;
@@ -275,7 +278,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			data: {
 				publicKey: response.publicKey,
 				data: response.data,
-				salt: response.salt,
+				salt: response.salt || '',
 				message: response.messageHex,
 			},
 		};
