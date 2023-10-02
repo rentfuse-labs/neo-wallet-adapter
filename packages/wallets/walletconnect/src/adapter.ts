@@ -1,5 +1,7 @@
+import { u } from '@cityofzion/neon-js';
 import WcSdk, { InvokeResult, Method, NetworkType, SignedMessage } from '@cityofzion/wallet-connect-sdk-core';
 import {
+	Argument,
 	BaseWalletAdapter,
 	ContractReadInvocation,
 	ContractReadInvocationMulti,
@@ -129,7 +131,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 					{
 						scriptHash: request.scriptHash,
 						operation: request.operation,
-						args: request.args as any,
+						args: this._normalizeArgs(request.args) as any,
 						abortOnFail: request.abortOnFail,
 					},
 				],
@@ -148,7 +150,10 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		try {
 			const response = await walletConnectInstance.testInvoke({
 				signers: request.signers as any,
-				invocations: request.invocations as any,
+				invocations: request.invocations.map((invocation) => ({
+					...invocation,
+					args: this._normalizeArgs(invocation.args) as any,
+				})) as any,
 			});
 			return this._responseToReadResult(response);
 		} catch (error: any) {
@@ -169,7 +174,7 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 					{
 						scriptHash: request.scriptHash,
 						operation: request.operation,
-						args: request.args as any,
+						args: this._normalizeArgs(request.args) as any,
 						abortOnFail: request.abortOnFail,
 					},
 				],
@@ -192,10 +197,8 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 			const response = await walletConnectInstance.invokeFunction({
 				signers: request.signers as any,
 				invocations: request.invocations.map((invocation) => ({
-					scriptHash: invocation.scriptHash,
-					operation: invocation.operation,
-					args: invocation.args as any,
-					abortOnFail: invocation.abortOnFail,
+					...invocation,
+					args: this._normalizeArgs(invocation.args) as any,
 				})),
 				extraNetworkFee: request.fee ? +request.fee * 100000000 : undefined,
 				extraSystemFee: request.extraSystemFee ? +request.extraSystemFee * 100000000 : undefined,
@@ -282,6 +285,21 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 				message: response.messageHex,
 			},
 		};
+	}
+
+	private _normalizeArgs(args: Argument[]): Argument[] {
+		// Needed because walletconnect accepts only an hexstring and not a base64 string
+		return args.map((arg) => {
+			if (arg.type === 'ByteArray') {
+				// If already an hex ok, otherwise if standard base64 convert it
+				if (u.isHex(arg.value)) {
+					return arg;
+				} else {
+					return { type: arg.type, value: u.base642hex(arg.value) };
+				}
+			}
+			return arg;
+		});
 	}
 
 	// Arrow function to bind this correctly and be similar to other wallets
