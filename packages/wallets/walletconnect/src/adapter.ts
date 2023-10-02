@@ -294,6 +294,9 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 				// Must convert standard base64 to hex
 				return { type: arg.type, value: u.base642hex(arg.value) };
 			}
+			if (arg.type === 'Array') {
+				return { type: arg.type, value: this._normalizeArgs(arg.value) };
+			}
 			return arg;
 		});
 	}
