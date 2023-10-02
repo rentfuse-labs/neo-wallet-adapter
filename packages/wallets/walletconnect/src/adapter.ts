@@ -291,12 +291,8 @@ export class WalletConnectWalletAdapter extends BaseWalletAdapter {
 		// Needed because walletconnect accepts only an hexstring and not a base64 string
 		return args.map((arg) => {
 			if (arg.type === 'ByteArray') {
-				// If already an hex ok, otherwise if standard base64 convert it
-				if (u.isHex(arg.value)) {
-					return arg;
-				} else {
-					return { type: arg.type, value: u.base642hex(arg.value) };
-				}
+				// Must convert standard base64 to hex
+				return { type: arg.type, value: u.base642hex(arg.value) };
 			}
 			return arg;
 		});
