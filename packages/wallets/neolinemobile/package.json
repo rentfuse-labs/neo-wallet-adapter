@@ -1,6 +1,6 @@
 {
 	"name": "@rentfuse-labs/neo-wallet-adapter-neolinemobile",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"author": "Rentfuse Labs",
 	"repository": "https://github.com/rentfuse-labs/neo-wallet-adapter",
 	"license": "Apache-2.0",
@@ -25,9 +25,9 @@
 		"@neongd/neo-provider": "1.2.0"
 	},
 	"peerDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.5.0"
 	},
 	"devDependencies": {
-		"@rentfuse-labs/neo-wallet-adapter-base": "^0.4.0"
+		"@rentfuse-labs/neo-wallet-adapter-base": "^0.5.0"
 	}
 }
